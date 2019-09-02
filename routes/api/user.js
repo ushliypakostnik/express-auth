@@ -23,7 +23,7 @@ const getClientHost = (header) => {
        clientHost = config.CLIENT_HOST_REACT;
      } else if (client = 'vue') {
        clientHost = config.CLIENT_HOST_VUE;
-     } else clientHost = config.CLIENT_HOST_DEV;
+     }
   } else {
     clientHost = config.CLIENT_HOST_DEV;
   }

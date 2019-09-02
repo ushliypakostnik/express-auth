@@ -31,7 +31,7 @@ const common = {
 const development = {
   ...common,
   HOST: process.env.HOST || 'http://127.0.0.1:8082',
-  CLIENT_HOST_DEV: process.env.CLIENT_HOST_DEV || 'http://localhost:3000',
+  CLIENT_HOSTS_DEV: process.env.CLIENT_HOST_DEV || 'http://localhost:3000',
   MEDIA_URL: process.env.MEDIA_URL || 'http://127.0.0.1:8082/media',
   CORS_ENABLED: true,
 };
