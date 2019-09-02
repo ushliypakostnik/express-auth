@@ -10,21 +10,21 @@
 {% endblock %}
 
 {% block header %}
-Напоминание пароля
+Change Password
 {% endblock %}
 
 {% block text %}
-Кто-то пытается востановить пароль на вашу почту.
+Someone is trying to recover the password to your mail.
 {% endblock %}
 
 {% block button %}
-<a class="button" href="{{ link }}">Перейти</a>
+<a class="button" href="{{ link }}">Restore password</a>
 {% endblock %}
 
 {% block link %}
-Если вы не видите кнопку выше нажмите на ссылку: <a href="{{ link }}">Востановить пароль</a>
+If you do not see the button above, click on the link:  <a href="{{ link }}">Restore password</a>
 {% endblock %}
 
 {% block footer %}
-Если Вы не желаете больше получать подобную информацию или считаете, что настоящее<br />письмо было отправлено Вам ошибочно - сообщите нам по ссылке <a href="#">Отписаться от рассылки.</a>
+{{ super() }}
 {% endblock %}

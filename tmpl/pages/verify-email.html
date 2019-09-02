@@ -10,21 +10,21 @@
 {% endblock %}
 
 {% block header %}
-Подтвердите адрес<br />своей электронной почты!
+Confirm your email address!
 {% endblock %}
 
 {% block text %}
-Кто-то пытается зарегистрироваться с помощью данного адреса электронной почты. Если это сделали Вы - нажмите на кнопку ниже, для того чтобы начать пользоваться сервисом.
+Someone is trying to register using this email address. If you have done this, click on the button below to start using the service.
 {% endblock %}
 
 {% block button %}
-<a class="button" href="{{ verifyLink }}">Перейти</a>
+<a class="button" href="{{ verifyLink }}">Verify account</a>
 {% endblock %}
 
 {% block link %}
-Если вы не видите кнопку выше нажмите на ссылку: <a href="{{ verifyLink }}">Верифицировать акаунт</a>
+If you do not see the button above, click on the link:  <a href="{{ verifyLink }}">Verify account</a>
 {% endblock %}
 
 {% block footer %}
-Если Вы не желаете больше получать подобную информацию или считаете, что настоящее<br />письмо было отправлено Вам ошибочно - сообщите нам по ссылке <a href="#">Отписаться от рассылки.</a>
+{{ super() }}
 {% endblock %}

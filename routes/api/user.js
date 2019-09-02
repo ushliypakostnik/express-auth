@@ -15,9 +15,25 @@ const router = Router();
 const jsonParser = bodyParser.json();
 const User = mongoose.model('User');
 
+const getClientHost = (header) => {
+  const client = header.split(' ')[1];
+  let clientHost;
+  if (process.env.NODE_ENV === 'production') {
+     if (client = 'react') {
+       clientHost = config.CLIENT_HOST_REACT;
+     } else if (client = 'vue') {
+       clientHost = config.CLIENT_HOST_VUE;
+     } else clientHost = config.CLIENT_HOST_DEV;
+  } else {
+    clientHost = config.CLIENT_HOST_DEV;
+  }
+  return clientHost;
+};
+
 // POST login route (optional, everyone has access)
 router.post('/login', auth.optional, jsonParser, (req, res, next) => {
   const { body: { user } } = req;
+  const { client } = req.headers;
 
   // eslint-disable-next-line no-unused-vars
   return passport.authenticate('local', { session: false }, (err, passportUser, info) => {
@@ -49,7 +65,7 @@ router.post('/login', auth.optional, jsonParser, (req, res, next) => {
         const { usermail } = response;
         const userid = response._id; // eslint-disable-line no-underscore-dangle
         // console.log("Отправляем письмо для верификации нового аккаунта!", usermail, userid);
-        sendVerifyEmail(usermail, userid);
+        sendVerifyEmail(usermail, userid, client);
         res.json({ user: response.toAuthJSON() });
       })
       .catch(() => {
@@ -62,18 +78,22 @@ router.post('/login', auth.optional, jsonParser, (req, res, next) => {
 // POST Send verification email
 router.post('/send-verify-email', auth.required, jsonParser, (req, res) => {
   const { user: { usermail } } = req;
+  const { client } = req.headers;
+
   User.findOne({ usermail }, (err, user) => {
     if (err) return res.sendStatus(400);
 
     const userid = user._id; // eslint-disable-line no-underscore-dangle
     // console.log("Отправляем письмо для верификации аккаунта!", usermail, userid);
-    sendVerifyEmail(usermail, userid);
+    sendVerifyEmail(usermail, userid, client);
     return res.sendStatus(200);
   });
 });
 
 // GET Verify account
 router.get('/verify', auth.optional, jsonParser, (req, res) => {
+  const { client } = req.query;
+
   User.findOne({ _id: req.query.id }, (err, user) => {
     if (err) return res.sendStatus(400);
 
@@ -83,14 +103,15 @@ router.get('/verify', auth.optional, jsonParser, (req, res) => {
       { returnOriginal: false }, (error, verifyUser) => { // eslint-disable-line no-unused-vars
         if (error) return res.sendStatus(400);
 
-        return res.redirect(`${config.CLIENT_HOST}`);
+        return res.redirect(`${getClientHost(client)}`);
       });
   });
 });
 
 // POST Remind password
 router.post('/remind', auth.optional, jsonParser, (req, res) => {
-  const { body: { usermail, client } } = req;
+  const { body: { usermail } } = req;
+  const { client } = req.headers;
 
   return User.findOne({ usermail }, (err, user) => {
     if (err) {
@@ -105,7 +126,7 @@ router.post('/remind', auth.optional, jsonParser, (req, res) => {
     const userid = authUser.id; // eslint-disable-line no-underscore-dangle
     const { token } = authUser;
     // console.log("Отправляем письмо для востановления пароля для аккаунта!", user);
-    sendPasswordRemindEmail(usermail, userid, token, client);
+    sendPasswordRemindEmail(usermail, userid, token, getClientHost(client));
     return res.status(200).json({ success: config.MESSAGES.remind_pass_200 });
   });
 });

@@ -25,11 +25,11 @@ mailer.extend(app, {
   },
 });
 
-export const sendVerifyEmail = (email, id) => {
+export const sendVerifyEmail = (email, id, client) => {
   app.mailer.send('pages/verify-email.html', {
     to: email,
     subject: 'Verify account',
-    verifyLink: `${config.HOST}api/user/verify?id=${id}`,
+    verifyLink: `${config.HOST}/api/user/verify?id=${id}&client=${client}`,
   }, (err) => {
     if (err) {
       // console.log('Ошибка отправки письма для верификации!');
@@ -41,19 +41,11 @@ export const sendVerifyEmail = (email, id) => {
 };
 
 // ?key=value#token=${token}
-export const sendPasswordRemindEmail = (email, id, token, client) => {
-  let clientHost;
-  if (process.env.NODE_ENV === 'production') {
-     if (client = 'react') clientHost = config.CLIENT_HOST_REACT;
-     if (client = 'vue') clientHost = config.CLIENT_HOST_VUE;
-  } else {
-    clientHost = config.CLIENT_HOST;
-  }
-
+export const sendPasswordRemindEmail = (email, id, token, clientHost) => {
   app.mailer.send('pages/remind-pass-email.html', {
     to: email,
     subject: 'Remind password',
-    link: `${clientHost}password/?key=value#id=${id}&token=${token}`,
+    link: `${clientHost}/password/?key=value#id=${id}&token=${token}`,
   }, (err) => {
     if (err) {
       // console.log('Ошибка отправки письма с напоминанием пароля!');

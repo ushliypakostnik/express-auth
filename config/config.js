@@ -34,17 +34,17 @@ const common = {
 
 const development = {
   ...common,
-  HOST: process.env.HOST || 'http://127.0.0.1:8082/',
-  CLIENT_HOST: process.env.CLIENT_HOST || 'http://localhost:3000/',
-  MEDIA_URL: process.env.MEDIA_URL || 'http://127.0.0.1:8082/',
+  HOST: process.env.HOST || 'http://127.0.0.1:8082',
+  CLIENT_HOST_DEV: process.env.CLIENT_HOST_DEV || 'http://localhost:3000',
+  MEDIA_URL: process.env.MEDIA_URL || 'http://127.0.0.1:8082/media',
   CORS_ENABLED: true,
 };
 
 const production = {
   ...common,
-  HOST: process.env.HOST || 'https://express-auth-backend.firebaseapp.com/',
-  CLIENT_HOST_REACT: process.env.CLIENT_HOST || 'https://react-auth.firebaseapp.com/',
-  CLIENT_HOST_VUE: process.env.CLIENT_HOST || 'https://vue-auth.firebaseapp.com/',
+  HOST: process.env.HOST || 'http://www.yourserver',
+  CLIENT_HOST_REACT: process.env.CLIENT_HOST_REACT || 'https://react-auth.firebaseapp.com',
+  CLIENT_HOST_VUE: process.env.CLIENT_HOST_VUE || 'https://vue-auth.firebaseapp.com',
   MEDIA_URL: process.env.MEDIA_URL || 'http://www.yourserver.com/media',
   CORS_ENABLED: false,
 };
