@@ -1,7 +1,6 @@
 {
-  "name": "back",
-  "version": "1.0.0",
-  "description": "",
+  "name": "express-auth",
+  "version": "1.1.0",
   "main": "server.js",
   "scripts": {
     "start": "cross-env NODE_ENV=development nodemon server.js --exec babel-node",
@@ -9,7 +8,7 @@
     "lint": "eslint .",
     "test": "cross-env NODE_ENV=development jest --watch"
   },
-  "author": "",
+  "author": "Levon Gambaryan",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
