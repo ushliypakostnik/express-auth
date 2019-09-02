@@ -7,11 +7,7 @@ require('dotenv').config();
 
 const env = process.env.NODE_ENV;
 
-PASS.SECRET = crypto.randomBytes(PASS.RANDOM_BYTES).toString('hex');
-let length;
-if (process.env.SECRET) {
-  length = process.env.SECRET.length; // eslint-disable-line prefer-destructuring
-} else length = null;
+const secret = crypto.randomBytes(PASS.RANDOM_BYTES).toString('hex');
 
 const common = {
   PORT: process.env.PORT || 8082,
@@ -19,8 +15,8 @@ const common = {
   STATIC_SERVE: false,
   PASS: {
     RANDOM_BYTES: process.env.RANDOM_BYTES || PASS.RANDOM_BYTES,
-    SECRET: process.env.SECRET || PASS.SECRET,
-    SALT_LENGTH: length || PASS.SECRET.length,
+    SECRET: secret,
+    SALT_LENGTH: secret.length,
     DB: {
       url: process.env.DB_URL || PASS.DB.url,
     },
@@ -42,10 +38,10 @@ const development = {
 
 const production = {
   ...common,
-  HOST: process.env.HOST || 'http://www.yourserver',
-  CLIENT_HOST_REACT: process.env.CLIENT_HOST_REACT || 'https://react-auth.firebaseapp.com',
-  CLIENT_HOST_VUE: process.env.CLIENT_HOST_VUE || 'https://vue-auth.firebaseapp.com',
-  MEDIA_URL: process.env.MEDIA_URL || 'http://www.yourserver.com/media',
+  HOST: process.env.HOST || 'http://express-auth.kafedra.org',
+  CLIENT_HOST_REACT: process.env.CLIENT_HOST_REACT || 'http://react-auth.kafedra.org',
+  CLIENT_HOST_VUE: process.env.CLIENT_HOST_VUE || 'http://vue-auth.kafedra.org',
+  MEDIA_URL: process.env.MEDIA_URL || 'http://express-auth.kafedra.org/media',
   CORS_ENABLED: false,
 };
 
