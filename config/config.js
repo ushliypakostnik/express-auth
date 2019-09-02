@@ -42,7 +42,7 @@ const development = {
 
 const production = {
   ...common,
-  HOST: process.env.HOST || 'https://express-auth.firebaseapp.com/',
+  HOST: process.env.HOST || 'https://express-auth-backend.firebaseapp.com/',
   CLIENT_HOST_REACT: process.env.CLIENT_HOST || 'https://react-auth.firebaseapp.com/',
   CLIENT_HOST_VUE: process.env.CLIENT_HOST || 'https://vue-auth.firebaseapp.com/',
   MEDIA_URL: process.env.MEDIA_URL || 'http://www.yourserver.com/media',
