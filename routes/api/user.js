@@ -19,9 +19,9 @@ const getClientHost = (header) => {
   const client = header.split(' ')[1];
   let clientHost;
   if (process.env.NODE_ENV === 'production') {
-     if (client = 'react') {
+     if (client === 'react') {
        clientHost = config.CLIENT_HOST_REACT;
-     } else if (client = 'vue') {
+     } else if (client === 'vue') {
        clientHost = config.CLIENT_HOST_VUE;
      }
   } else {
