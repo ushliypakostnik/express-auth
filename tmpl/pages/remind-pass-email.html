@@ -1,0 +1,30 @@
+{% extends "template-email-inline.html" %}
+
+{% block style %}
+{{ super() }}
+{% endblock %}
+
+{# This is comment #}
+{% block content %}
+{{ super() }}
+{% endblock %}
+
+{% block header %}
+Напоминание пароля
+{% endblock %}
+
+{% block text %}
+Кто-то пытается востановить пароль на вашу почту.
+{% endblock %}
+
+{% block button %}
+<a class="button" href="{{ link }}">Перейти</a>
+{% endblock %}
+
+{% block link %}
+Если вы не видите кнопку выше нажмите на ссылку: <a href="{{ link }}">Востановить пароль</a>
+{% endblock %}
+
+{% block footer %}
+Если Вы не желаете больше получать подобную информацию или считаете, что настоящее<br />письмо было отправлено Вам ошибочно - сообщите нам по ссылке <a href="#">Отписаться от рассылки.</a>
+{% endblock %}

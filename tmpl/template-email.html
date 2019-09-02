@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<style>
+{% block style %}
+  body {
+    background: #f9f9f9;
+    font-size: 100%;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+  }
+
+  .wrapper {
+    width: 600px;
+    max-width: 600px;
+    height: auto;
+    margin: 0;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  a {
+    color: #98395b;
+    white-space: nowrap;
+    text-decoration: underline;
+  }
+  a:hover {
+    text-decoration: none;
+  }
+
+  strong {
+    font-weight: bold;
+  }
+
+  table {
+    height: auto;
+  }
+
+  #back {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .content {
+    color: #0a1216;
+    background: #ffffff;
+  }
+
+  .header {
+    color: #0a1216;
+    letter-spacing: 1.5px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .text {
+    color: #0a1216;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: normal;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-top: 5px;
+  }
+
+  .button {
+    display: inline-block;
+    width: 300px;
+    height: 16px;
+    line-height: 16px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    background: #8b688f;
+    color: #ffffff;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 3px;
+    text-decoration: none;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  .button:hover {
+    text-decoration: none;
+  }
+  a.button {
+    color: #ffffff !important;
+  }
+
+  .footer {
+    height: auto;
+    background: #0a1216;
+    color: #828e9c;
+  }
+  .footer p {
+    font-size: 11px;
+    line-height: 13px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    letter-spacing: normal;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .footer p a {
+    text-decoration: underline;
+  }
+  .footer p a:hover {
+    text-decoration: none;
+  }
+{% endblock %}
+</style>
+
+</head>
+<body>
+  <div class="wrapper">
+    <table border="0" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+    {% block content %}
+      <!--<tr class="header">
+        <th align="left" valign="top">
+          {% block image %}
+          <img border="0" id="back" width="100%" src="http://levon.devprod.ru/images/alcoemailheader.jpg" />
+          {% endblock %}
+        </th>
+      </tr>-->
+      <tr class="content">
+        <td align="center" valign="top">
+          <p class="header">
+          {% block header %}
+          Verify email template
+          {% endblock %}
+          </p>
+        </td>
+      </tr>
+      <tr class="content">
+        <td align="center" valign="top">
+          <p class="text">
+          {% block text %}
+          Lorem Ipsum is simply dummy text of the printing and <a href="#">typesetting industry</a>. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries.
+          {% endblock %}
+          </p>
+        </td>
+      </tr>
+      <tr class="content">
+        <td align="center" valign="top">
+          {% block button %}
+          <a class="button" href="#">Перейти к сервису</a>
+          {% endblock %}
+        </td>
+      </tr>
+      <tr class="content">
+        <td align="center" valign="top">
+          <p class="text">
+          {% block link %}
+          Если вы не видите кнопку выше нажмите на ссылку: <a href="#">Верифицировать акаунт</a>
+          {% endblock %}
+          </p>
+        </td>
+      </tr>
+      <tr class="footer">
+        <td align="center" valign="top">
+          <p>
+          {% block footer %}
+          Если Вы не желаете больше получать подобную информацию или считаете, что настоящее<br />письмо было отправлено Вам ошибочно - сообщите нам по ссылке <a href="#">Отписаться от рассылки.</a>
+          {% endblock %}
+          </p>
+        </td>
+      </tr>
+    {% endblock %}
+    </table>
+  </div>
+</body>
+</html>
