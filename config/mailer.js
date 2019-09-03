@@ -32,10 +32,10 @@ export const sendVerifyEmail = (email, id, clientHost) => {
     verifyLink: `${clientHost}/verify?id=${id}`,
   }, (err) => {
     if (err) {
-      console.log('Ошибка отправки письма для верификации!');
-      console.log(err);
+      // console.log('Ошибка отправки письма для верификации!');
+      // console.log(err);
     } else {
-      console.log('Письмо для верификации отправлено!');
+      // console.log('Письмо для верификации отправлено!');
     }
   });
 };
@@ -48,7 +48,7 @@ export const sendPasswordRemindEmail = (email, id, token, clientHost) => {
   }, (err) => {
     if (err) {
       // console.log('Ошибка отправки письма с напоминанием пароля!');
-      console.log(err);
+      // console.log(err);
     } else {
       // console.log('Письмо с напоминанием пароля отправлено!');
     }

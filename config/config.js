@@ -31,7 +31,6 @@ const common = {
 const development = {
   ...common,
   HOST: process.env.HOST || 'http://127.0.0.1:8082',
-  CLIENT_HOSTS_DEV: process.env.CLIENT_HOST_DEV || 'http://localhost:3000',
   MEDIA_URL: process.env.MEDIA_URL || 'http://127.0.0.1:8082/media',
   CORS_ENABLED: true,
 };
@@ -39,8 +38,6 @@ const development = {
 const production = {
   ...common,
   HOST: process.env.HOST || 'http://express-auth.kafedra.org',
-  CLIENT_HOST_REACT: process.env.CLIENT_HOST_REACT || 'http://react-auth.kafedra.org',
-  CLIENT_HOST_VUE: process.env.CLIENT_HOST_VUE || 'http://vue-auth.kafedra.org',
   MEDIA_URL: process.env.MEDIA_URL || 'http://express-auth.kafedra.org/media',
   CORS_ENABLED: false,
 };

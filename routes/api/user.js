@@ -20,8 +20,6 @@ router.post('/login', auth.optional, jsonParser, (req, res, next) => {
   const { body: { user } } = req;
   const { client } = req.headers;
 
-  console.log(client);
-
   // eslint-disable-next-line no-unused-vars
   return passport.authenticate('local', { session: false }, (err, passportUser, info) => {
     if (err) return next(err);
@@ -51,7 +49,7 @@ router.post('/login', auth.optional, jsonParser, (req, res, next) => {
       .then((response) => {
         const { usermail } = response;
         const userid = response._id; // eslint-disable-line no-underscore-dangle
-        console.log("Отправляем письмо для верификации нового аккаунта!", usermail, userid, client);
+        // console.log("Отправляем письмо для верификации нового аккаунта!", usermail, userid, client);
         sendVerifyEmail(usermail, userid, client);
         res.json({ user: response.toAuthJSON() });
       })
