@@ -25,17 +25,17 @@ mailer.extend(app, {
   },
 });
 
-export const sendVerifyEmail = (email, id, client) => {
+export const sendVerifyEmail = (email, id, clientHost) => {
   app.mailer.send('pages/verify-email.html', {
     to: email,
     subject: 'Verify account',
-    verifyLink: `${config.HOST}/api/user/verify?id=${id}&client=${client}`,
+    verifyLink: `${clientHost}/verify?id=${id}`,
   }, (err) => {
     if (err) {
-      // console.log('Ошибка отправки письма для верификации!');
+      console.log('Ошибка отправки письма для верификации!');
       console.log(err);
     } else {
-      // console.log('Письмо для верификации отправлено!');
+      console.log('Письмо для верификации отправлено!');
     }
   });
 };
