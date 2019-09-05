@@ -9,8 +9,6 @@ RUN npm install
 
 COPY . .
 
-# RUN npm run build && rm -rf node_module
-
 EXPOSE 8082
 
 # for development
