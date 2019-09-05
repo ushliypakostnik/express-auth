@@ -15,7 +15,73 @@ const router = Router();
 const jsonParser = bodyParser.json();
 const User = mongoose.model('User');
 
-// POST login route (optional, everyone has access)
+
+// GET login via VKontakte route (optional, everyone has access)
+router.get('/vkontakte', auth.optional, jsonParser, (req, res, next) => {
+
+   // eslint-disable-next-line no-unused-vars
+  return passport.authenticate('vkontakte', { scope : ['email'] }, (err, vkontakteUser, info) => {
+
+    if (err) return next(err);
+
+    // Если пользователь есть в базе
+    if (vkontakteUser) {
+      return res.json({ user: vkontakteUser.toAuthJSON() });
+    }
+
+    // Если пользователя нет в базе - регистрируем нового
+    const newUser = new User();
+    newUser.setNewUser(null);
+
+    return newUser.save()
+      .then((response) => {
+        const { usermail } = response;
+        const userid = response._id; // eslint-disable-line no-underscore-dangle
+        // console.log("Отправляем письмо для верификации нового аккаунта!", usermail, userid, client);
+        sendVerifyEmail(usermail, userid, client);
+        res.json({ user: response.toAuthJSON() });
+      })
+      .catch(() => {
+        // console.log("Не удалось сохранить новый аккаунт!");
+        res.status(400).json({ error: config.MESSAGES.auth_400 });
+      });
+  })(req, res, next);
+});
+
+
+// GET login via Facebook route (optional, everyone has access)
+router.get('/facebook', auth.optional, jsonParser, (req, res, next) => {
+
+   // eslint-disable-next-line no-unused-vars
+  return passport.authenticate('facebook', { scope : ['email'] }, (err, facebookUser, info) => {
+    if (err) return next(err);
+
+    // Если пользователь есть в базе
+    if (facebookUser) {
+      return res.json({ user: facebookUser.toAuthJSON() });
+    }
+
+    // Если пользователя нет в базе - регистрируем нового
+    const newUser = new User();
+    newUser.setNewUser(null);
+
+    return newUser.save()
+      .then((response) => {
+        const { usermail } = response;
+        const userid = response._id; // eslint-disable-line no-underscore-dangle
+        // console.log("Отправляем письмо для верификации нового аккаунта!", usermail, userid, client);
+        sendVerifyEmail(usermail, userid, client);
+        res.json({ user: response.toAuthJSON() });
+      })
+      .catch(() => {
+        // console.log("Не удалось сохранить новый аккаунт!");
+        res.status(400).json({ error: config.MESSAGES.auth_400 });
+      });
+  })(req, res, next);
+});
+
+
+// POST standart login route (optional, everyone has access)
 router.post('/login', auth.optional, jsonParser, (req, res, next) => {
   const { body: { user } } = req;
   const { client } = req.headers;
@@ -60,6 +126,7 @@ router.post('/login', auth.optional, jsonParser, (req, res, next) => {
   })(req, res, next);
 });
 
+
 // POST Send verification email
 router.post('/send-verify-email', auth.required, jsonParser, (req, res) => {
   const { user: { usermail } } = req;
@@ -74,6 +141,7 @@ router.post('/send-verify-email', auth.required, jsonParser, (req, res) => {
     return res.sendStatus(200);
   });
 });
+
 
 // POST Verify account
 router.post('/verify', auth.optional, jsonParser, (req, res) => {
@@ -92,6 +160,7 @@ router.post('/verify', auth.optional, jsonParser, (req, res) => {
       });
   });
 });
+
 
 // POST Remind password
 router.post('/remind', auth.optional, jsonParser, (req, res) => {
@@ -116,6 +185,7 @@ router.post('/remind', auth.optional, jsonParser, (req, res) => {
   });
 });
 
+
 // POST Set new password
 router.post('/password', auth.optional, jsonParser, (req, res) => {
   const { body: { user: { id, password } } } = req;
@@ -138,6 +208,7 @@ router.post('/password', auth.optional, jsonParser, (req, res) => {
   });
 });
 
+
 // GET User profile
 router.get('/profile', auth.required, jsonParser, (req, res) => {
   const { user: { usermail } } = req;
@@ -149,10 +220,12 @@ router.get('/profile', auth.required, jsonParser, (req, res) => {
   });
 });
 
+
 // GET Logout
 router.get('/logout', auth.required, (req, res) => {
   req.session.destroy();
   res.send('logout success!');
 });
+
 
 export default router;

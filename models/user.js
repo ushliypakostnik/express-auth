@@ -18,10 +18,12 @@ const UserSchema = new Schema({
 
 // eslint-disable-next-line func-names
 UserSchema.methods.setNewUser = function (password) {
-  // console.log('User set new user ', password);
-  const salt = crypto.randomBytes(config.PASS.RANDOM_BYTES).toString('hex');
-  const hash = crypto.pbkdf2Sync(password, salt, 10000, 512, 'sha512').toString('hex');
-  this.password = hash + salt;
+  if (password) {
+    // console.log('User set new user ', password);
+    const salt = crypto.randomBytes(config.PASS.RANDOM_BYTES).toString('hex');
+    const hash = crypto.pbkdf2Sync(password, salt, 10000, 512, 'sha512').toString('hex');
+    this.password = hash + salt;
+  }
   this.username = this.usermail.split('@')[0]; // eslint-disable-line prefer-destructuring
 };
 

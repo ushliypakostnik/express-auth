@@ -1,8 +1,15 @@
 import passport from 'passport';
 import LocalStrategy from 'passport-local';
+import FacebookStrategy from 'passport-facebook';
+
+import config from './config';
 
 import User from '../models/user';
 
+const VKontakteStrategy = require('passport-vkontakte').Strategy;
+
+
+// For standard authentication
 const local = new LocalStrategy({
   usernameField: 'user[usermail]',
   passwordField: 'user[password]',
@@ -18,5 +25,40 @@ const local = new LocalStrategy({
 });
 
 passport.use(local);
+
+
+// For authentication via Facebook
+const facebook = new FacebookStrategy({
+  clientID: config.PASS.FACEBOOK.id,
+  clientSecret: config.PASS.FACEBOOK.secret,
+  callbackURL: `${config.HOST}/api/user/facebook`,
+  profileFields: [ 'email'],
+}, (accessToken, refreshToken, profile, done) => {
+  const usermail = String(profile._json.email);
+  User.findOne({ usermail })
+    .then((user) => {
+      return done(null, user);
+    }).catch(done);
+});
+
+passport.use(facebook);
+
+
+// For authentication via VKontakte
+const vkontakte = new VKontakteStrategy({
+  clientID: config.PASS.VKONTAKTE.id,
+  clientSecret: config.PASS.VKONTAKTE.secret,
+  callbackURL: `${config.HOST}/api/user/vkontakte`,
+  profileFields: [ 'email'],
+}, (accessToken, refreshToken, params, profile, done) => {
+  const usermail = params.email;
+  User.findOne({ usermail })
+    .then((user) => {
+      return done(null, user);
+    }).catch(done);
+});
+
+passport.use(vkontakte);
+
 
 export default passport;

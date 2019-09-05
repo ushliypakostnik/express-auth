@@ -9,6 +9,7 @@ router.use('/api', api);
 
 // Test route
 router.get('/test', (req, res) => {
+  console.log('test rout!');
   res.sendStatus(200);
 });
 

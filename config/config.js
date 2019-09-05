@@ -24,14 +24,22 @@ const common = {
       user: process.env.EMAIL_USER || PASS.EMAIL.user,
       pass: process.env.EMAIL_PASS || PASS.EMAIL.pass,
     },
+    FACEBOOK: {
+      id: process.env.FACEBOOK_APP_ID || PASS.FACEBOOK.id,
+      secret: process.env.FACEBOOK_APP_SECRET || PASS.FACEBOOK.secret,
+    },
+    VKONTAKTE: {
+      id: process.env.VKONTAKTE_APP_ID || PASS.VKONTAKTE.id,
+      secret: process.env.VKONTAKTE_APP_SECRET || PASS.VKONTAKTE.secret,
+    }
   },
   MESSAGES,
 };
 
 const development = {
   ...common,
-  HOST: process.env.HOST || 'http://127.0.0.1:8082',
-  MEDIA_URL: process.env.MEDIA_URL || 'http://127.0.0.1:8082/media',
+  HOST: process.env.HOST || 'http://localhost:8082',
+  MEDIA_URL: process.env.MEDIA_URL || 'http://localhost:8082/media',
   CORS_ENABLED: true,
 };
 
