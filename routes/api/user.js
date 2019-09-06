@@ -35,7 +35,7 @@ router.get('/vkontakte', auth.optional, jsonParser, (req, res, next) => {
     const newUser = new User({ usermail: info });
     newUser.setNewUser(null);
 
-    return user.save()
+    return newUser.save()
       .then((response) => {
         const { usermail } = response;
         const userid = response._id; // eslint-disable-line no-underscore-dangle
