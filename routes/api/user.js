@@ -39,7 +39,7 @@ router.get('/vkontakte', auth.optional, jsonParser, (req, res, next) => {
       .then((response) => {
         const { usermail } = response;
         const userid = response._id; // eslint-disable-line no-underscore-dangle
-        console.log("Отправляем письмо для верификации нового аккаунта!", usermail, userid, client);
+        //console.log("Отправляем письмо для верификации нового аккаунта!", usermail, userid, client);
         sendVerifyEmail(usermail, userid, client);
         res.json({ user: response.toAuthJSON() });
       })
