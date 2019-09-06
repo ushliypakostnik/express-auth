@@ -18,10 +18,12 @@ const User = mongoose.model('User');
 
 // GET login via VKontakte route (optional, everyone has access)
 router.get('/vkontakte', auth.optional, jsonParser, (req, res, next) => {
+  const { client } = req.headers;
 
-   // eslint-disable-next-line no-unused-vars
+  console.log(req.test);
+
+  // eslint-disable-next-line no-unused-vars
   return passport.authenticate('vkontakte', { scope : ['email'] }, (err, vkontakteUser, info) => {
-
     if (err) return next(err);
 
     // Если пользователь есть в базе
@@ -30,14 +32,14 @@ router.get('/vkontakte', auth.optional, jsonParser, (req, res, next) => {
     }
 
     // Если пользователя нет в базе - регистрируем нового
-    const newUser = new User();
+    const newUser = new User({ usermail: info });
     newUser.setNewUser(null);
 
-    return newUser.save()
+    return user.save()
       .then((response) => {
         const { usermail } = response;
         const userid = response._id; // eslint-disable-line no-underscore-dangle
-        // console.log("Отправляем письмо для верификации нового аккаунта!", usermail, userid, client);
+        console.log("Отправляем письмо для верификации нового аккаунта!", usermail, userid, client);
         sendVerifyEmail(usermail, userid, client);
         res.json({ user: response.toAuthJSON() });
       })
@@ -51,8 +53,9 @@ router.get('/vkontakte', auth.optional, jsonParser, (req, res, next) => {
 
 // GET login via Facebook route (optional, everyone has access)
 router.get('/facebook', auth.optional, jsonParser, (req, res, next) => {
+  const { client } = req.headers;
 
-   // eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line no-unused-vars
   return passport.authenticate('facebook', { scope : ['email'] }, (err, facebookUser, info) => {
     if (err) return next(err);
 
@@ -62,7 +65,7 @@ router.get('/facebook', auth.optional, jsonParser, (req, res, next) => {
     }
 
     // Если пользователя нет в базе - регистрируем нового
-    const newUser = new User();
+    const newUser = new User({ usermail: info });
     newUser.setNewUser(null);
 
     return newUser.save()
@@ -125,7 +128,6 @@ router.post('/login', auth.optional, jsonParser, (req, res, next) => {
       });
   })(req, res, next);
 });
-
 
 // POST Send verification email
 router.post('/send-verify-email', auth.required, jsonParser, (req, res) => {

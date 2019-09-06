@@ -37,8 +37,8 @@ const facebook = new FacebookStrategy({
   const usermail = String(profile._json.email);
   User.findOne({ usermail })
     .then((user) => {
-      return done(null, user);
-    }).catch(done);
+      return done(null, user, usermail);
+    }).catch(done, false, usermail);
 });
 
 passport.use(facebook);
@@ -54,8 +54,8 @@ const vkontakte = new VKontakteStrategy({
   const usermail = params.email;
   User.findOne({ usermail })
     .then((user) => {
-      return done(null, user);
-    }).catch(done);
+      return done(null, user, usermail);
+    }).catch(done, false, usermail);
 });
 
 passport.use(vkontakte);

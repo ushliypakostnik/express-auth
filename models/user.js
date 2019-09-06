@@ -53,7 +53,6 @@ UserSchema.methods.generateJWT = function () {
 
   return jwt.sign({
     id: this.id,
-    usermail: this.usermail,
     exp: parseInt(expirationDate.getTime() / 1000, 10),
   }, config.PASS.SECRET);
 };
@@ -63,7 +62,6 @@ UserSchema.methods.toAuthJSON = function () {
   // console.log('User to Auth JSON');
   return {
     id: this.id,
-    usermail: this.usermail,
     token: this.generateJWT(),
   };
 };
