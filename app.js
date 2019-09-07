@@ -39,6 +39,13 @@ if (config.CORS_ENABLED) {
   app.use(cors());
 }
 
+app.use(
+  cors({
+    origin: "http://localhost:3000", // restrict calls to those this address
+    methods: "GET" // only allow GET requests
+  })
+);
+
 // Static
 if (config.STATIC_SERVE) {
   const mediaURL = new url.URL(config.MEDIA_URL);

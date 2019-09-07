@@ -17,7 +17,7 @@ const local = new LocalStrategy({
   User.findOne({ usermail })
     .then((user) => {
       if (!user || !user.validatePassword(password)) {
-        return done(null, false, { errors: { 'email or password': 'is invalid' } });
+        return done(null, false, { errors: 'email or password is invalid' });
       }
 
       return done(null, user);
@@ -34,11 +34,13 @@ const facebook = new FacebookStrategy({
   callbackURL: `${config.HOST}/api/user/facebook`,
   profileFields: [ 'email'],
 }, (accessToken, refreshToken, profile, done) => {
-  const usermail = String(profile._json.email);
-  User.findOne({ usermail })
-    .then((user) => {
-      return done(null, user, usermail);
-    }).catch(done, false, usermail);
+  process.nextTick(() => {
+    const usermail = String(profile._json.email);
+    User.findOne({ usermail })
+      .then((user) => {
+        return done(null, user, usermail);
+      }).catch(done, false, usermail);
+  });
 });
 
 passport.use(facebook);
