@@ -17,11 +17,7 @@ const local = new LocalStrategy({
   User.findOne({ usermail })
     .then((user) => {
 
-      if (!user || !user.validatePassword(password)) {
-        return done(null, false, { errors: { 'email or password': 'is invalid' } });
-      }
-
-      /*if (!user) {
+      if (!user) {
         return done(null, false, { errors: config.MESSAGES.validation_no_user });
       }
 
@@ -29,9 +25,8 @@ const local = new LocalStrategy({
         if (user.social) {
           return done(null, user, { errors: config.MESSAGES.validation_social });
         }
-
         return done(null, false, { errors: config.MESSAGES.validation_password_invalid });
-      }*/
+      }
 
       return done(null, user);
     }).catch(done);
@@ -47,6 +42,9 @@ const facebook = new FacebookStrategy({
   callbackURL: `${config.HOST}/api/user/facebook/`,
   profileFields: [ 'email'],
 }, (accessToken, refreshToken, profile, done) => {
+
+  console.log('FacebookStrategy:', profile);
+
   const usermail = String(profile._json.email);
   User.findOne({ usermail })
     .then((user) => {
@@ -55,7 +53,6 @@ const facebook = new FacebookStrategy({
 });
 
 passport.use(facebook);
-
 
 // For authentication via VKontakte
 const vkontakte = new VKontakteStrategy({

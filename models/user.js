@@ -12,7 +12,7 @@ const UserSchema = new Schema({
   usermail: { type: String, required: true, unique: true },
   username: String,
   password: String,
-  social: Boolean,
+  social: { type: Boolean, default: false },
   isVerify: { type: Boolean, default: false },
   userdata: { type: Object, default: [] },
 });
@@ -31,6 +31,7 @@ UserSchema.methods.setNewUser = function (password) {
 
 // eslint-disable-next-line func-names
 UserSchema.methods.setNewPassword = function (password) {
+  if (this.social) this.social = false;
   // console.log('User set new password ', password);
   const salt = crypto.randomBytes(config.PASS.RANDOM_BYTES).toString('hex');
   const hash = crypto.pbkdf2Sync(password, salt, 10000, 512, 'sha512').toString('hex');

@@ -31,6 +31,7 @@ router.post('/login', auth.optional, jsonParser, (req, res, next) => {
       return res.json({ user: passportUser.toAuthJSON() });
     }
 
+    // Если пользователь в базе но пароль не валидный
     if (!passportUser && info) {
       const { usermail } = user;
       User.findOne({ usermail }, (error, result) => { // eslint-disable-line consistent-return
@@ -41,6 +42,12 @@ router.post('/login', auth.optional, jsonParser, (req, res, next) => {
           return res.status(422).json({ error: config.MESSAGES.auth_422 });
         }
       });
+    }
+
+    // Если пользователь в базе, но пароля не было - пришел из соцсетей
+    if (passportUser && info) {
+      passportUser.setNewPassword(user.password);
+      return res.json({ user: passportUser.toAuthJSON() });
     }
 
     // Если пользователя нет в базе - регистрируем нового
@@ -69,8 +76,6 @@ router.get('/facebook', auth.optional, jsonParser, (req, res, next) => {
 
   // eslint-disable-next-line no-unused-vars
   return passport.authenticate('facebook', { session: false, scope : ['email'] }, (err, facebookUser, info) => {
-    console.log('/facebook 2: ');
-
     if (err) return next(err);
 
     console.log(err, facebookUser, info);
@@ -90,7 +95,6 @@ router.get('/facebook', auth.optional, jsonParser, (req, res, next) => {
         const userid = response._id; // eslint-disable-line no-underscore-dangle
         // console.log("Отправляем письмо для верификации нового аккаунта!", usermail, userid, client);
         sendVerifyEmail(usermail, userid, client);
-        console.log(response);
         res.json({ user: response.toAuthJSON() });
       })
       .catch(() => {
@@ -99,7 +103,6 @@ router.get('/facebook', auth.optional, jsonParser, (req, res, next) => {
       });
   })(req, res, next);
 });
-
 
 
 // GET login via VKontakte route (optional, everyone has access)
