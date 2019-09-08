@@ -3,7 +3,6 @@ import api from './api/index';
 
 const router = Router();
 
-
 // API
 
 router.use('/api', api);
