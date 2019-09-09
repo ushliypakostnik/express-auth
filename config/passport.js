@@ -19,11 +19,11 @@ const local = new LocalStrategy({
       if (!user) {
         return done(null, false, { message: config.MESSAGES.validation_no_user });
       }
-      if (user || !user.validatePassword(password)) {
-        if (user.social) {
-          return done(null, user, { error: config.MESSAGES.validation_social });
-        }
-        return done(null, false, { error: config.MESSAGES.validation_password_invalid });
+      if (user && !user.validatePassword(password)) {
+        return done(null, user, { message: config.MESSAGES.validation_password_invalid });
+      }
+      if (user && user.social) {
+          return done(null, user, { message: config.MESSAGES.validation_social });
       }
       return done(null, user);
     }).catch(done);

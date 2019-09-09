@@ -24,27 +24,24 @@ router.post('/login', auth.optional, jsonParser, (req, res, next) => {
 
   // eslint-disable-next-line no-unused-vars
   return passport.authenticate('local', { session: false }, (err, passportUser, info) => {
-    if (err) return next(err);
+    if (err) return res.status(400).json({ message: config.MESSAGES.auth_400 });
 
     // Если пользователь есть в базе
     if (passportUser) {
       // И пароль валидный для этого email
-      if (!info) return res.json({ user: passportUser.toAuthJSON() });
+      if (!info) {
+        return res.json({ user: passportUser.toAuthJSON() });
+      }
 
-      const { usermail } = user;
-      User.findOne({ usermail }, (error, result) => { // eslint-disable-line consistent-return
-        if (error) return res.status(400).json({ error: config.MESSAGES.auth_400 });
+      if (info.message === config.MESSAGES.validation_password_invalid) {
+        return res.status(422).json({ message: config.MESSAGES.validation_password_invalid });
+      }
 
-        // Не валидный пароль для этого email
-        if (result && info.errors === config.MESSAGES.validation_password_invalid) {
-          return res.status(422).json({ error: config.MESSAGES.auth_422 });
-        } else {
-          // Если пользователь в базе, но пароля не было, видимо - пришел из соцсетей
-          const socialUser = new User(user);
-          socialUser.setNewPassword(user.password);
-          return res.json({ user: socialUser.toAuthJSON() });
-        }
-      });
+      if (info.message === config.MESSAGES.validation_social) {
+        const socialUser = new User(user);
+        socialUser.setNewPassword(user.password);
+        return res.json({ user: socialUser.toAuthJSON() });
+      }
     }
 
     // Если пользователя нет в базе - регистрируем нового
@@ -61,7 +58,7 @@ router.post('/login', auth.optional, jsonParser, (req, res, next) => {
       })
       .catch(() => {
         // console.log("Не удалось сохранить новый аккаунт!");
-        res.status(400).json({ error: config.MESSAGES.auth_400 });
+        res.status(400).json({ message: config.MESSAGES.auth_400 });
       });
   })(req, res, next);
 });
@@ -91,7 +88,7 @@ router.get('/facebook/callback', auth.optional, jsonParser, (req, res, next) => 
       })
       .catch(() => {
         // console.log("Не удалось сохранить новый аккаунт!");
-        return res.status(400).json({ error: config.MESSAGES.auth_400 });
+        return res.status(400).json({ message: config.MESSAGES.auth_400 });
       });
     }
 
@@ -127,7 +124,7 @@ router.get('/vkontakte/callback', auth.optional, jsonParser, (req, res, next) =>
       })
       .catch(() => {
         // console.log("Не удалось сохранить новый аккаунт!");
-        return res.status(400).json({ error: config.MESSAGES.auth_400 });
+        return res.status(400).json({ message: config.MESSAGES.auth_400 });
       });
     }
 
@@ -161,15 +158,15 @@ router.post('/verify', auth.optional, jsonParser, (req, res) => {
   const { id } = req.body;
 
   User.findOne({ _id: id }, (err, user) => {
-    if (err) return res.status(400).json({ error: config.MESSAGES.verify_400 });
+    if (err) return res.status(400).json({ message: config.MESSAGES.verify_400 });
 
     const { usermail } = user;
     return User.findOneAndUpdate({ usermail },
       { $set: { isVerify: true } },
       { returnOriginal: false }, (error, verifyUser) => { // eslint-disable-line no-unused-vars
-        if (error) return res.status(400).json({ error: config.MESSAGES.verify_400 });
+        if (error) return res.status(400).json({ message: config.MESSAGES.verify_400 });
 
-        return res.status(200).json({ success: config.MESSAGES.verify_200 });
+        return res.status(200).json({ message: config.MESSAGES.verify_200 });
       });
   });
 });
@@ -181,20 +178,16 @@ router.post('/remind', auth.optional, jsonParser, (req, res) => {
   const { client } = req.headers;
 
   return User.findOne({ usermail }, (err, user) => {
-    if (err) {
-      return res.sendStatus(400);
-    }
+    if (err) return res.sendStatus(400);
 
-    if (!user) {
-      return res.status(422).json({ error: config.MESSAGES.remind_pass_422 });
-    }
+    if (!user) return res.status(422).json({ message: config.MESSAGES.remind_pass_422 });
 
     const authUser = user.toAuthJSON();
     const userid = authUser.id; // eslint-disable-line no-underscore-dangle
     const { token } = authUser;
     // console.log("Отправляем письмо для востановления пароля для аккаунта!", user);
     sendPasswordRemindEmail(usermail, userid, token, client);
-    return res.status(200).json({ success: config.MESSAGES.remind_pass_200 });
+    return res.status(200).json({ message: config.MESSAGES.remind_pass_200 });
   });
 });
 
@@ -204,16 +197,14 @@ router.post('/password', auth.optional, jsonParser, (req, res) => {
   const { body: { user: { id, password } } } = req;
 
   User.findOne({ _id: id }, (err, user) => {
-    if (err) {
-      return res.status(400).json({ error: config.MESSAGES.set_pass_400 });
-    }
+    if (err) return res.status(400).json({ message: config.MESSAGES.set_pass_400 });
 
     const newPassword = user.setNewPassword(password);
     return User.findOneAndUpdate({ _id: id },
       { $set: { password: newPassword } },
       { returnOriginal: false }, (error, passwordUser) => { // eslint-disable-line no-unused-vars
         if (err) {
-          return res.status(400).json({ error: config.MESSAGES.set_pass_400 });
+          return res.status(400).json({ message: config.MESSAGES.set_pass_400 });
         }
 
         return res.sendStatus(200);
