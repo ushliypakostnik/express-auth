@@ -56,8 +56,6 @@ const vkontakte = new VKontakteStrategy({
   profileFields: [ 'email' ],
 }, (accessToken, refreshToken, params, profile, done) => {
   let usermail = params.email;
-  if (!usermail) usermail = `${profile.id}@vk.com`;
-
   User.findOne({ usermail })
     .then((user) => {
       return done(null, user, usermail);

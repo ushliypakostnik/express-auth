@@ -39,7 +39,7 @@ router.post('/login', auth.optional, jsonParser, (req, res, next) => {
         if (result && info.errors === config.MESSAGES.validation_password_invalid) {
           return res.status(422).json({ error: config.MESSAGES.auth_422 });
         } else {
-        // Если пользователь в базе, но пароля не было, видимо - пришел из соцсетей
+          // Если пользователь в базе, но пароля не было, видимо - пришел из соцсетей
           const socialUser = new User(user);
           socialUser.setNewPassword(user.password);
           return res.json({ user: socialUser.toAuthJSON() });
@@ -105,16 +105,16 @@ router.get('/facebook/callback', auth.optional, jsonParser, (req, res, next) => 
 
 // GET login via Vkontakte route (optional, everyone has access)
 router.get('/vkontakte', auth.optional, jsonParser,
-  passport.authenticate('vkontakte'));
+  passport.authenticate('vkontakte' , { session: false, scope : [ 'email' ] }));
 
 router.get('/vkontakte/callback', auth.optional, jsonParser, (req, res, next) => {
   const client = req.header('Referer').slice(0, -6);
-
 
   // eslint-disable-next-line no-unused-vars
   passport.authenticate('vkontakte', { session: false, scope : [ 'email' ] }, (err, vkontakteUser, usermail) => {
     if (err) return res.redirect(`${client}/login`);
 
+    console.log(usermail);
 
     const newUser = new User({ usermail });
     if (!vkontakteUser) {
@@ -139,6 +139,7 @@ router.get('/vkontakte/callback', auth.optional, jsonParser, (req, res, next) =>
     res.redirect(`${client}/social?token=${token}`);
   })(req, res, next);
 });
+
 
 // POST Send verification email
 router.post('/send-verify-email', auth.required, jsonParser, (req, res) => {
