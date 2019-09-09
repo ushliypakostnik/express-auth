@@ -26,25 +26,35 @@ router.post('/login', auth.optional, jsonParser, (req, res, next) => {
   return passport.authenticate('local', { session: false }, (err, passportUser, info) => {
     if (err) return res.status(400).json({ message: config.MESSAGES.auth_400 });
 
-    // Если пользователь есть в базе
+    // If the user is in the database
     if (passportUser) {
-      // И пароль валидный для этого email
+
+      // And the password is valid for this email
       if (!info) {
         return res.json({ user: passportUser.toAuthJSON() });
+      }
+
+      if (info.message === config.MESSAGES.validation_social) {
+        const { usermail } = user;
+        const { password } = user;
+        const newPassword = passportUser.setNewPassword(password);
+
+        User.findOneAndUpdate({ usermail },
+          { $set: { password: newPassword } },
+          { returnOriginal: false }, (error, notSocialUser) => { // eslint-disable-line no-unused-vars
+            if (error) return res.status(400).json({ message: config.MESSAGES.verify_400 });
+
+            // console.log('Updated social user', notSocialUser);
+            return res.status(200).json({ user: notSocialUser.toAuthJSON() });
+          });
       }
 
       if (info.message === config.MESSAGES.validation_password_invalid) {
         return res.status(422).json({ message: config.MESSAGES.validation_password_invalid });
       }
-
-      if (info.message === config.MESSAGES.validation_social) {
-        const socialUser = new User(user);
-        socialUser.setNewPassword(user.password);
-        return res.json({ user: socialUser.toAuthJSON() });
-      }
     }
 
-    // Если пользователя нет в базе - регистрируем нового
+    // If the user is not in the database - register a new one
     const newUser = new User(user);
     newUser.setNewUser(user.password);
 
@@ -52,13 +62,13 @@ router.post('/login', auth.optional, jsonParser, (req, res, next) => {
       .then((response) => {
         const { usermail } = response;
         const userid = response._id; // eslint-disable-line no-underscore-dangle
-        // console.log("Отправляем письмо для верификации нового аккаунта!", usermail, userid, client);
+        // console.log("We send a letter to verify the new account!", usermail, userid, client);
         sendVerifyEmail(usermail, userid, client);
         res.json({ user: response.toAuthJSON() });
       })
       .catch(() => {
-        // console.log("Не удалось сохранить новый аккаунт!");
-        res.status(400).json({ message: config.MESSAGES.auth_400 });
+        // console.log("Failed to save new account!");
+        res.status(400);
       });
   })(req, res, next);
 });
@@ -77,17 +87,17 @@ router.get('/facebook/callback', auth.optional, jsonParser, (req, res, next) => 
 
     const newUser = new User({ usermail });
     if (!facebookUser) {
-      // Если пользователя нет в базе - регистрируем нового
+      // If the user is not in the database - register a new one
       newUser.setNewUser(null);
 
       newUser.save()
       .then((response) => {
         const userid = response._id; // eslint-disable-line no-underscore-dangle
-        // console.log("Отправляем письмо для верификации нового аккаунта!", usermail, userid, client);
+        // console.log("We send a letter to verify the new account!", usermail, userid, client);
         sendVerifyEmail(usermail, userid, client);
       })
       .catch(() => {
-        // console.log("Не удалось сохранить новый аккаунт!");
+        // console.log("Failed to save new account!");
         return res.status(400).json({ message: config.MESSAGES.auth_400 });
       });
     }
@@ -113,17 +123,17 @@ router.get('/vkontakte/callback', auth.optional, jsonParser, (req, res, next) =>
 
     const newUser = new User({ usermail });
     if (!vkontakteUser) {
-      // Если пользователя нет в базе - регистрируем нового
+      // If the user is not in the database - register a new one
       newUser.setNewUser(null);
 
       newUser.save()
       .then((response) => {
         const userid = response._id; // eslint-disable-line no-underscore-dangle
-        // console.log("Отправляем письмо для верификации нового аккаунта!", usermail, userid, client);
+        // console.log("We send a letter to verify the new account!", usermail, userid, client);
         sendVerifyEmail(usermail, userid, client);
       })
       .catch(() => {
-        // console.log("Не удалось сохранить новый аккаунт!");
+        // console.log("Failed to save new account!");
         return res.status(400).json({ message: config.MESSAGES.auth_400 });
       });
     }
@@ -137,7 +147,7 @@ router.get('/vkontakte/callback', auth.optional, jsonParser, (req, res, next) =>
 
 
 // POST Send verification email
-router.post('/send-verify-email', auth.required, jsonParser, (req, res) => {
+router.post('/send-verify-email', auth.required, jsonParser, (req, res, next) => {
   const { user: { id } } = req;
   const { client } = req.headers;
 
@@ -146,7 +156,7 @@ router.post('/send-verify-email', auth.required, jsonParser, (req, res) => {
 
     const { usermail } = user;
     const userid = user._id; // eslint-disable-line no-underscore-dangle
-    // console.log("Отправляем письмо для верификации аккаунта!  console.log(usermail, client);", usermail, userid);
+    // console.log("We are sending an email to verify your account!", usermail, userid, clien);
     sendVerifyEmail(usermail, userid, client);
     return res.sendStatus(200);
   });
@@ -154,7 +164,7 @@ router.post('/send-verify-email', auth.required, jsonParser, (req, res) => {
 
 
 // POST Verify account
-router.post('/verify', auth.optional, jsonParser, (req, res) => {
+router.post('/verify', auth.optional, jsonParser, (req, res, next) => {
   const { id } = req.body;
 
   User.findOne({ _id: id }, (err, user) => {
@@ -173,7 +183,7 @@ router.post('/verify', auth.optional, jsonParser, (req, res) => {
 
 
 // POST Remind password
-router.post('/remind', auth.optional, jsonParser, (req, res) => {
+router.post('/remind', auth.optional, jsonParser, (req, res, next) => {
   const { body: { usermail } } = req;
   const { client } = req.headers;
 
@@ -185,7 +195,7 @@ router.post('/remind', auth.optional, jsonParser, (req, res) => {
     const authUser = user.toAuthJSON();
     const userid = authUser.id; // eslint-disable-line no-underscore-dangle
     const { token } = authUser;
-    // console.log("Отправляем письмо для востановления пароля для аккаунта!", user);
+    // console.log("We send an email to recover the password for the account!", user);
     sendPasswordRemindEmail(usermail, userid, token, client);
     return res.status(200).json({ message: config.MESSAGES.remind_pass_200 });
   });
@@ -193,7 +203,7 @@ router.post('/remind', auth.optional, jsonParser, (req, res) => {
 
 
 // POST Set new password
-router.post('/password', auth.optional, jsonParser, (req, res) => {
+router.post('/password', auth.optional, jsonParser, (req, res, next) => {
   const { body: { user: { id, password } } } = req;
 
   User.findOne({ _id: id }, (err, user) => {
@@ -214,20 +224,20 @@ router.post('/password', auth.optional, jsonParser, (req, res) => {
 
 
 // GET User profile
-router.get('/profile', auth.required, jsonParser, (req, res) => {
+router.get('/profile', auth.required, jsonParser, (req, res, next) => {
   const { user: { id } } = req;
 
   User.findOne({ _id: id }, (err, user) => {
     if (err) return res.sendStatus(400);
 
-    // console.log("Отправляем данные профиля для аккаунта!", user);
+    // console.log("We send profile information for the account!", user);
     return res.json({ user: user.toProfileJSON() });
   });
 });
 
 
 // GET Logout
-router.get('/logout', auth.required, (req, res) => {
+router.get('/logout', auth.required, (req, res, next) => {
   req.session.destroy();
   res.send('logout success!');
 });

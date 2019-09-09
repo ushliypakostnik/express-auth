@@ -10,9 +10,8 @@ const { Schema } = mongoose;
 
 const UserSchema = new Schema({
   usermail: { type: String, required: true, unique: true },
-  username: String,
-  password: String,
-  social: { type: Boolean, default: false },
+  username: { type: String || null, default: null },
+  password: { type: String || null, default: null },
   isVerify: { type: Boolean, default: false },
   userdata: { type: Object, default: [] },
 });
@@ -24,14 +23,12 @@ UserSchema.methods.setNewUser = function (password) {
     const salt = crypto.randomBytes(config.PASS.RANDOM_BYTES).toString('hex');
     const hash = crypto.pbkdf2Sync(password, salt, 10000, 512, 'sha512').toString('hex');
     this.password = hash + salt;
-    this.social = false;
-  } else this.social = true;
+  }
   this.username = this.usermail.split('@')[0]; // eslint-disable-line prefer-destructuring
 };
 
 // eslint-disable-next-line func-names
 UserSchema.methods.setNewPassword = function (password) {
-  if (this.social) this.social = false;
   // console.log('User set new password ', password);
   const salt = crypto.randomBytes(config.PASS.RANDOM_BYTES).toString('hex');
   const hash = crypto.pbkdf2Sync(password, salt, 10000, 512, 'sha512').toString('hex');
