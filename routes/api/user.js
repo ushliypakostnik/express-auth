@@ -114,8 +114,6 @@ router.get('/vkontakte/callback', auth.optional, jsonParser, (req, res, next) =>
   passport.authenticate('vkontakte', { session: false, scope : [ 'email' ] }, (err, vkontakteUser, usermail) => {
     if (err) return res.redirect(`${client}/login`);
 
-    console.log(usermail);
-
     const newUser = new User({ usermail });
     if (!vkontakteUser) {
       // Если пользователя нет в базе - регистрируем нового
@@ -194,7 +192,7 @@ router.post('/remind', auth.optional, jsonParser, (req, res) => {
     const authUser = user.toAuthJSON();
     const userid = authUser.id; // eslint-disable-line no-underscore-dangle
     const { token } = authUser;
-    console.log("Отправляем письмо для востановления пароля для аккаунта!", user);
+    // console.log("Отправляем письмо для востановления пароля для аккаунта!", user);
     sendPasswordRemindEmail(usermail, userid, token, client);
     return res.status(200).json({ success: config.MESSAGES.remind_pass_200 });
   });
