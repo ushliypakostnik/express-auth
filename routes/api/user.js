@@ -64,11 +64,11 @@ router.post('/login', auth.optional, jsonParser, (req, res, next) => {
         const userid = response._id; // eslint-disable-line no-underscore-dangle
         // console.log("We send a letter to verify the new account!", usermail, userid, client);
         sendVerifyEmail(usermail, userid, client);
-        res.json({ user: response.toAuthJSON() });
+        return res.json({ user: response.toAuthJSON() });
       })
       .catch(() => {
         // console.log("Failed to save new account!");
-        res.status(400);
+        return res.status(400);
       });
   })(req, res, next);
 });
@@ -167,18 +167,13 @@ router.post('/send-verify-email', auth.required, jsonParser, (req, res, next) =>
 router.post('/verify', auth.optional, jsonParser, (req, res, next) => {
   const { id } = req.body;
 
-  User.findOne({ _id: id }, (err, user) => {
-    if (err) return res.status(400).json({ message: config.MESSAGES.verify_400 });
+  return User.findOneAndUpdate({ _id: id },
+    { $set: { isVerify: true } },
+    { returnOriginal: false }, (err, verifyUser) => { // eslint-disable-line no-unused-vars
+      if (err) return res.status(400).json({ message: config.MESSAGES.verify_400 });
 
-    const { usermail } = user;
-    return User.findOneAndUpdate({ usermail },
-      { $set: { isVerify: true } },
-      { returnOriginal: false }, (error, verifyUser) => { // eslint-disable-line no-unused-vars
-        if (error) return res.status(400).json({ message: config.MESSAGES.verify_400 });
-
-        return res.status(200).json({ message: config.MESSAGES.verify_200 });
-      });
-  });
+      return res.status(200).json({ message: config.MESSAGES.verify_200 });
+    });
 });
 
 

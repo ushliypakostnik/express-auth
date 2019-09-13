@@ -40,6 +40,9 @@ const facebook = new FacebookStrategy({
   profileFields: [ 'email' ],
 }, (accessToken, refreshToken, profile, done) => {
   const usermail = String(profile._json.email);
+
+  console.log(usermail);
+
   User.findOne({ usermail })
     .then((user) => {
       return done(null, user, usermail);
