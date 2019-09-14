@@ -164,7 +164,7 @@ router.post('/send-verify-email', auth.required, jsonParser, (req, res, next) =>
 
 
 // POST Verify account
-router.post('/verify', auth.optional, jsonParser, (req, res, next) => {
+router.post('/verify', auth.required, jsonParser, (req, res, next) => {
   const { id } = req.body;
 
   return User.findOneAndUpdate({ _id: id },
@@ -178,7 +178,7 @@ router.post('/verify', auth.optional, jsonParser, (req, res, next) => {
 
 
 // POST Remind password
-router.post('/remind', auth.optional, jsonParser, (req, res, next) => {
+router.post('/remind', auth.required, jsonParser, (req, res, next) => {
   const { body: { usermail } } = req;
   const { client } = req.headers;
 
@@ -198,7 +198,7 @@ router.post('/remind', auth.optional, jsonParser, (req, res, next) => {
 
 
 // POST Set new password
-router.post('/password', auth.optional, jsonParser, (req, res, next) => {
+router.post('/password', auth.required, jsonParser, (req, res, next) => {
   const { body: { user: { id, password } } } = req;
 
   User.findOne({ _id: id }, (err, user) => {
