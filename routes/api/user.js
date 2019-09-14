@@ -117,8 +117,6 @@ router.get('/vkontakte', auth.optional, jsonParser,
 router.get('/vkontakte/callback', auth.optional, jsonParser, (req, res, next) => {
   const client = req.header('Referer');
 
-  console.log('/vkontakte/callback', req.header('Referer'), client);
-
   // eslint-disable-next-line no-unused-vars
   passport.authenticate('vkontakte', { session: false, scope : [ 'email' ] }, (err, vkontakteUser, usermail) => {
     if (err) return res.redirect(`${client}/login`);
@@ -214,7 +212,7 @@ router.post('/password', auth.optional, jsonParser, (req, res, next) => {
           return res.status(400).json({ message: config.MESSAGES.set_pass_400 });
         }
 
-        return res.sendStatus(200);
+        return res.status(200).json({ message: config.MESSAGES.set_pass_200 });;
       });
   });
 });
