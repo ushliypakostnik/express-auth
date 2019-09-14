@@ -26,10 +26,15 @@ mailer.extend(app, {
 });
 
 export const sendVerifyEmail = (email, id, clientHost) => {
+
+  const client = clientHost.slice(-1) === '/' ? clientHost.slice(0, -1) : clientHost;
+
+  console.log('clientHost: ', client);
+
   app.mailer.send('pages/verify-email.html', {
     to: email,
     subject: 'Verify account',
-    verifyLink: `${clientHost}/verify?id=${id}`,
+    verifyLink: `${client}/verify?id=${id}`,
   }, (err) => {
     if (err) {
       // console.log('Ошибка отправки письма для верификации!');

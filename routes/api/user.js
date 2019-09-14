@@ -79,7 +79,7 @@ router.get('/facebook', auth.optional, jsonParser,
   passport.authenticate('facebook'));
 
 router.get('/facebook/callback', auth.optional, jsonParser, (req, res, next) => {
-  const client = req.header('Referer').slice(0, -6);
+  const client = req.header('Referer');
 
   // eslint-disable-next-line no-unused-vars
   passport.authenticate('facebook', { session: false, scope : ['email'] }, (err, facebookUser, usermail) => {
@@ -105,7 +105,7 @@ router.get('/facebook/callback', auth.optional, jsonParser, (req, res, next) => 
     const user = facebookUser || newUser;
     const _user = user.toAuthJSON();
     const { token } = _user;
-    res.redirect(`${client}/social?token=${token}`);
+    res.redirect(`${client}social?token=${token}`);
   })(req, res, next);
 });
 
@@ -115,7 +115,9 @@ router.get('/vkontakte', auth.optional, jsonParser,
   passport.authenticate('vkontakte' , { session: false, scope : [ 'email' ] }));
 
 router.get('/vkontakte/callback', auth.optional, jsonParser, (req, res, next) => {
-  const client = req.header('Referer').slice(0, -6);
+  const client = req.header('Referer');
+
+  console.log('/vkontakte/callback', req.header('Referer'), client);
 
   // eslint-disable-next-line no-unused-vars
   passport.authenticate('vkontakte', { session: false, scope : [ 'email' ] }, (err, vkontakteUser, usermail) => {
@@ -141,7 +143,7 @@ router.get('/vkontakte/callback', auth.optional, jsonParser, (req, res, next) =>
     const user = vkontakteUser || newUser;
     const _user = user.toAuthJSON();
     const { token } = _user;
-    res.redirect(`${client}/social?token=${token}`);
+    res.redirect(`${client}social?token=${token}`);
   })(req, res, next);
 });
 
