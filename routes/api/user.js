@@ -178,7 +178,7 @@ router.post('/verify', auth.required, jsonParser, (req, res, next) => {
 
 
 // POST Remind password
-router.post('/remind', auth.required, jsonParser, (req, res, next) => {
+router.post('/remind', auth.optional, jsonParser, (req, res, next) => {
   const { body: { usermail } } = req;
   const { client } = req.headers;
 
