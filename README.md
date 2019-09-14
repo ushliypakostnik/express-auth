@@ -10,9 +10,9 @@ Backand Auth Module
 Примеры клиентских приложений
 -----------------------------
 
-* [Create React App based](https://github.com/ushliypakostnik/react-auth)
+* [Create React App based frontend boilerpate](https://github.com/ushliypakostnik/react-auth)
 
-* [Vue cli based](https://github.com/ushliypakostnik/vue-auth)
+* [Vue cli based frontend boilerpate](https://github.com/ushliypakostnik/vue-auth)
 
 
 API
@@ -21,7 +21,8 @@ API
     POST { body : { user: { usermail, password } } }
     (optional, everyone has access)
     ${HOST}/api/user/login
-    Общедоступный роут выдающий аутентификацию пользователю по адресу электронной почты и паролю или регистриющиющий пользователя если такого емейла нет в базе.
+
+Общедоступный роут выдающий аутентификацию пользователю по адресу электронной почты и паролю или регистриющиющий пользователя если такого емейла нет в базе.
 
 
     GET
@@ -32,48 +33,55 @@ API
     (optional, everyone has access)
     ${HOST}/api/user/vkontakte
 
-    Общедоступные роуты позволяющие получить аутентификацию через социальные сети Facebook и VKontakte. Если полученного от соцсети адреса электронной почты пользователя нет в базе - он добавляется в нее.
+Общедоступные роуты позволяющие получить аутентификацию через социальные сети Facebook и VKontakte. Если полученного от соцсети адреса электронной почты пользователя нет в базе - он добавляется в нее.
 
 
     POST { user: { id } }
     (authentification required)
     ${HOST}/api/user/send-verify-email
-    Защищенный роут позволяющий отправить письмо о верификации аккаунта пользователя с переданным емейлом
+
+Защищенный роут позволяющий отправить письмо о верификации аккаунта пользователя с переданным емейлом
 
 
     POST { body: { id } }
     (authentification required)
     ${HOST}/api/user/verify
-    Роут позволяющий верифицировать аккаунт пользователя по полученному айди
+
+Роут позволяющий верифицировать аккаунт пользователя по полученному айди
 
 
     POST { body: { usermail } }
     (optional, everyone has access)
     ${HOST}/api/user/remind
-    Общедоступный роут позволяющий отправить письмо со ссылкой на востановление пароля по переданному адресу электронной почты
+
+бщедоступный роут позволяющий отправить письмо со ссылкой на востановление пароля по переданному адресу электронной почты
 
 
     POST { body: { user: { id, password } } }
     (authentification required)
     ${HOST}/api/user/password
-    Защищенный роут позволяющий создать новый пароль для пользователя по переданному айди
+
+Защищенный роут позволяющий создать новый пароль для пользователя по переданному айди
 
 
     GET { user: { id } }
     (authentification required)
     ${HOST}/api/user/profile
-    Защищенный роут возвращающий профиль пользователя по переданому айди
+
+Защищенный роут возвращающий профиль пользователя по переданому айди
 
 
     GET { user: { id } }
     (authentification required)
     ${HOST}/api/user/logout
-    Защищенный роут прерываюший аунтентификацию
+
+Защищенный роут прерываюший аунтентификацию
 
 
     GET
     ${HOST}/test
-    Тестовый роут
+
+Тестовый роут
 
 
 Deploy
