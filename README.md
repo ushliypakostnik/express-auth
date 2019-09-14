@@ -1,4 +1,4 @@
-Beckand Auth Module
+Backend Auth Module
 ===================
 
 Описание
