@@ -1,4 +1,4 @@
-Backand Auth Module
+Beckand Auth Module
 ===================
 
 Описание
@@ -22,7 +22,7 @@ API
     (optional, everyone has access)
     ${HOST}/api/user/login
 
-Общедоступный роут выдающий аутентификацию пользователю по адресу электронной почты и паролю или регистриющиющий пользователя если такого емейла нет в базе.
+Общедоступный роут выдающий аутентификацию пользователю по адресу электронной почты и паролю или регистрирующий пользователя если такого емейла нет в базе.
 
 *
 
@@ -39,7 +39,7 @@ API
 *
 
     POST { user: { id } }
-    (authentification required)
+    (authentication required)
     ${HOST}/api/user/send-verify-email
 
 Защищенный роут позволяющий отправить письмо о верификации аккаунта пользователя с переданным емейлом
@@ -47,7 +47,7 @@ API
 *
 
     POST { body: { id } }
-    (authentification required)
+    (authentication required)
     ${HOST}/api/user/verify
 
 Роут позволяющий верифицировать аккаунт пользователя по полученному айди
@@ -63,7 +63,7 @@ API
 *
 
     POST { body: { user: { id, password } } }
-    (authentification required)
+    (authentication required)
     ${HOST}/api/user/password
 
 Защищенный роут позволяющий создать новый пароль для пользователя по переданному айди
@@ -71,7 +71,7 @@ API
 *
 
     GET { user: { id } }
-    (authentification required)
+    (authentication required)
     ${HOST}/api/user/profile
 
 Защищенный роут возвращающий профиль пользователя по переданому айди
@@ -79,10 +79,10 @@ API
 *
 
     GET { user: { id } }
-    (authentification required)
+    (authentication required)
     ${HOST}/api/user/logout
 
-Защищенный роут прерываюший аунтентификацию
+Защищенный роут прерывающий аутентификацию
 
 *
 
