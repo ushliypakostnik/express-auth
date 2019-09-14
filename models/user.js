@@ -10,18 +10,20 @@ const { Schema } = mongoose;
 
 const UserSchema = new Schema({
   usermail: { type: String, required: true, unique: true },
-  username: String,
-  password: String,
+  username: { type: String || null, default: null },
+  password: { type: String || null, default: null },
   isVerify: { type: Boolean, default: false },
   userdata: { type: Object, default: [] },
 });
 
 // eslint-disable-next-line func-names
 UserSchema.methods.setNewUser = function (password) {
-  // console.log('User set new user ', password);
-  const salt = crypto.randomBytes(config.PASS.RANDOM_BYTES).toString('hex');
-  const hash = crypto.pbkdf2Sync(password, salt, 10000, 512, 'sha512').toString('hex');
-  this.password = hash + salt;
+  if (password) {
+    // console.log('User set new user ', password);
+    const salt = crypto.randomBytes(config.PASS.RANDOM_BYTES).toString('hex');
+    const hash = crypto.pbkdf2Sync(password, salt, 10000, 512, 'sha512').toString('hex');
+    this.password = hash + salt;
+  }
   this.username = this.usermail.split('@')[0]; // eslint-disable-line prefer-destructuring
 };
 
@@ -51,7 +53,6 @@ UserSchema.methods.generateJWT = function () {
 
   return jwt.sign({
     id: this.id,
-    usermail: this.usermail,
     exp: parseInt(expirationDate.getTime() / 1000, 10),
   }, config.PASS.SECRET);
 };
@@ -61,7 +62,6 @@ UserSchema.methods.toAuthJSON = function () {
   // console.log('User to Auth JSON');
   return {
     id: this.id,
-    usermail: this.usermail,
     token: this.generateJWT(),
   };
 };
