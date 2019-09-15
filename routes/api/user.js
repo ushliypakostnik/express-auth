@@ -164,7 +164,7 @@ router.post('/send-verify-email', auth.required, jsonParser, (req, res, next) =>
 
 
 // POST Verify account
-router.post('/verify', auth.required, jsonParser, (req, res, next) => {
+router.post('/verify', auth.optional, jsonParser, (req, res, next) => {
   const { id } = req.body;
 
   return User.findOneAndUpdate({ _id: id },
