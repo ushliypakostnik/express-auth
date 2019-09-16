@@ -38,15 +38,15 @@ const common = {
 
 const development = {
   ...common,
-  HOST: process.env.HOST || 'http://localhost:8082',
-  MEDIA_URL: process.env.MEDIA_URL || 'http://localhost:8082/media',
+  HOST: process.env.HOST || 'https://localhost:8082',
+  MEDIA_URL: process.env.MEDIA_URL || 'https://localhost:8082/media',
   CORS_ENABLED: true,
 };
 
 const production = {
   ...common,
-  HOST: process.env.HOST || 'http://express-auth.kafedra.org',
-  MEDIA_URL: process.env.MEDIA_URL || 'http://express-auth.kafedra.org/media',
+  HOST: process.env.HOST || 'https://express-auth.kafedra.org',
+  MEDIA_URL: process.env.MEDIA_URL || 'https://express-auth.kafedra.org/media',
   CORS_ENABLED: false,
 };
 
