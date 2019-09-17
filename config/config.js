@@ -38,8 +38,8 @@ const common = {
 
 const development = {
   ...common,
-  HOST: process.env.HOST || 'https://localhost:8082',
-  MEDIA_URL: process.env.MEDIA_URL || 'https://localhost:8082/media',
+  HOST: process.env.HOST || 'http://localhost:8082',
+  MEDIA_URL: process.env.MEDIA_URL || 'http://localhost:8082/media',
   CORS_ENABLED: true,
 };
 
