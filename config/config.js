@@ -7,14 +7,15 @@ require('dotenv').config();
 
 const env = process.env.NODE_ENV;
 
-const secret = crypto.randomBytes(PASS.RANDOM_BYTES).toString('hex');
+const random = Number(process.env.RANDOM_BYTES) || PASS.RANDOM_BYTES;
+const secret = crypto.randomBytes(random).toString('hex');
 
 const common = {
   PORT: process.env.PORT || 8082,
   MEDIA_DIR: process.env.MEDIA_DIR || 'media',
   STATIC_SERVE: false,
   PASS: {
-    RANDOM_BYTES: process.env.RANDOM_BYTES || PASS.RANDOM_BYTES,
+    RANDOM_BYTES:random,
     SECRET: secret,
     SALT_LENGTH: secret.length,
     DB: {
