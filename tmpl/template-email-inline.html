@@ -37,15 +37,10 @@
     height: auto;
   }
 
-  #back {
+  /* #back {
     width: 100%;
     max-width: 100%;
     height: auto;
-  }
-
-  .content {
-    color: #0a1216;
-    background: #ffffff;
   }
 
   .header {
@@ -57,6 +52,11 @@
     font-weight: bold;
     padding-left: 20px;
     padding-right: 20px;
+  } */
+
+  .content {
+    color: #0a1216;
+    background: #ffffff;
   }
 
   .text {
@@ -97,7 +97,7 @@
     color: #ffffff !important;
   }
 
-  .footer {
+  /* .footer {
     height: auto;
     background: #0a1216;
     color: #828e9c;
@@ -116,7 +116,7 @@
   }
   .footer p a:hover {
     text-decoration: none;
-  }
+  } */
 {% endblock %}
 </style>
 
@@ -166,14 +166,14 @@
           </p>
         </td>
       </tr>
-      <tr class="footer" style="height:auto;background-color:#0a1216;background-image:none;background-repeat:repeat;background-position:top left;background-attachment:scroll;color:#828e9c;" >
+      <!--<tr class="footer" style="height:auto;background-color:#0a1216;background-image:none;background-repeat:repeat;background-position:top left;background-attachment:scroll;color:#828e9c;" >
         <td align="center" valign="top">
           <p style="font-size:11px;line-height:13px;margin-top:30px;margin-bottom:30px;letter-spacing:normal;padding-left:20px;padding-right:20px;" >
           {% block footer %}
           f you do not want to receive such information anymore or if you think that this<br />letter was sent to you incorrectly, let us know by the link <a href="#" style="color:#98395b;white-space:nowrap;text-decoration:underline;" >Unsubscribe</a>.
           {% endblock %}
           </p>
-        </td>
+        </td>-->
       </tr>
     {% endblock %}
     </table>

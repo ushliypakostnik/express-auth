@@ -10,9 +10,15 @@ Backend Auth Module
 Примеры клиентских приложений
 -----------------------------
 
-* [Create React App based PWA frontend boilerpate](https://github.com/ushliypakostnik/react-auth)
+* [Create React App based PWA frontend boilerpate](https://github.com/ushliypakostnik/react-auth), [Демонстрация](https://react-auth.kafedra.org/)
 
-* [Vue cli based PWA frontend boilerpate](https://github.com/ushliypakostnik/vue-auth)
+* [Vue cli based PWA frontend boilerpate](https://github.com/ushliypakostnik/vue-auth), [Демонстрация](https://vue-auth.kafedra.org/)
+
+
+Features:
+---------
+
+* Локализация: сообщения об ошибках, а также письма будут отправляться пользователю на языке выбранном в момент отравки на клиенте
 
 
 API
