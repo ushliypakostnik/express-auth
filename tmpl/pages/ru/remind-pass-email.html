@@ -1,0 +1,26 @@
+{% extends "template-email-inline.html" %}
+
+{% block style %}
+{{ super() }}
+{% endblock %}
+
+{# This is comment #}
+{% block content %}
+{{ super() }}
+{% endblock %}
+
+{% block header %}
+Смена пароля
+{% endblock %}
+
+{% block text %}
+Кто-то пытается восстановить пароль к вашей почте.
+{% endblock %}
+
+{% block button %}
+<a class="button" href="{{ link }}">Восстановить пароль</a>
+{% endblock %}
+
+{% block link %}
+Если вы не видите кнопку выше, нажмите на ссылку: <a href="{{ link }}">Восстановить пароль</a>
+{% endblock %}

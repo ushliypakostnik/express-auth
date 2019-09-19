@@ -9,14 +9,14 @@ router.use('/api', api);
 
 // Test route
 router.get('/test', (req, res, next) => {
-  console.log('test rout!');
-  res.sendStatus(200);
+  console.log('test rout!', req.headers);
+  res.send(req.t('test'));
 });
 
 // Others
 router.use((req, res) => {
   res.status(404);
-  res.send('Page not found!!!');
+  res.send(req.t('page404'));
   res.end();
 });
 

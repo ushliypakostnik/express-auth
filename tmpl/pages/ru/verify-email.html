@@ -1,0 +1,26 @@
+{% extends "template-email-inline.html" %}
+
+{% block style %}
+{{ super() }}
+{% endblock %}
+
+{# This is comment #}
+{% block content %}
+{{ super() }}
+{% endblock %}
+
+{% block header %}
+Подтвердите Ваш электронный адрес!
+{% endblock %}
+
+{% block text %}
+Кто-то пытается зарегистрироваться, используя этот адрес электронной почты. Если вы сделали это, нажмите на кнопку ниже, чтобы начать пользоваться услугой.
+{% endblock %}
+
+{% block button %}
+<a class="button" href="{{ verifyLink }}">Подтвердить</a>
+{% endblock %}
+
+{% block link %}
+Если вы не видите кнопку выше, нажмите на ссылку <a href="{{ verifyLink }}">Подтвердить учетную запись</a>
+{% endblock %}

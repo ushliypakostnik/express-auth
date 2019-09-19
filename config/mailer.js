@@ -25,10 +25,12 @@ mailer.extend(app, {
   },
 });
 
-export const sendVerifyEmail = (email, id, clientHost) => {
+export const sendVerifyEmail = (email, id, clientHost, language) => {
   const client = clientHost.slice(-1) === '/' ? clientHost.slice(0, -1) : clientHost;
 
-  app.mailer.send('pages/verify-email.html', {
+  console.log(language);
+
+  app.mailer.send(`pages/${language}/verify-email.html`, {
     to: email,
     subject: 'Verify account',
     verifyLink: `${client}/verify?id=${id}`,
@@ -42,8 +44,8 @@ export const sendVerifyEmail = (email, id, clientHost) => {
   });
 };
 
-export const sendPasswordRemindEmail = (email, id, token, clientHost) => {
-  app.mailer.send('pages/remind-pass-email.html', {
+export const sendPasswordRemindEmail = (email, id, token, clientHost, language) => {
+  app.mailer.send(`pages/${language}/remind-pass-email.html`, {
     to: email,
     subject: 'Remind password',
     link: `${clientHost}/password/?key=value#id=${id}&token=${token}`,

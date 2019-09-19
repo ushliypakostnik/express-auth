@@ -2,6 +2,7 @@ import { Router } from 'express';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import url from 'url';
+import i18next from 'i18next';
 
 import auth from '../auth';
 import passport from '../../config/passport';
@@ -20,11 +21,12 @@ const User = mongoose.model('User');
 // POST standart login route (optional, everyone has access)
 router.post('/login', auth.optional, jsonParser, (req, res, next) => {
   const { body: { user } } = req;
-  const { client } = req.headers;
+  const { origin } = req.headers;
+  const { language } = req;
 
   // eslint-disable-next-line no-unused-vars
   return passport.authenticate('local', { session: false }, (err, passportUser, info) => {
-    if (err) return res.status(400).json({ message: config.MESSAGES.auth_400 });
+    if (err) return res.status(400).json({ message: req.t('auth_400') });
 
     // If the user is in the database
     if (passportUser) {
@@ -42,7 +44,7 @@ router.post('/login', auth.optional, jsonParser, (req, res, next) => {
         User.findOneAndUpdate({ usermail },
           { $set: { password: newPassword } },
           { returnOriginal: false }, (error, notSocialUser) => { // eslint-disable-line no-unused-vars
-            if (error) return res.status(400).json({ message: config.MESSAGES.verify_400 });
+            if (error) return res.status(400).json({ message: req.t('verify_400') });
 
             // console.log('Updated social user', notSocialUser);
             return res.status(200).json({ user: notSocialUser.toAuthJSON() });
@@ -50,7 +52,7 @@ router.post('/login', auth.optional, jsonParser, (req, res, next) => {
       }
 
       if (info.message === config.MESSAGES.validation_password_invalid) {
-        return res.status(422).json({ message: config.MESSAGES.validation_password_invalid });
+        return res.status(422).json({ message: req.t('validation_password_invalid') });
       }
     }
 
@@ -62,8 +64,8 @@ router.post('/login', auth.optional, jsonParser, (req, res, next) => {
       .then((response) => {
         const { usermail } = response;
         const userid = response._id; // eslint-disable-line no-underscore-dangle
-        // console.log("We send a letter to verify the new account!", usermail, userid, client);
-        sendVerifyEmail(usermail, userid, client);
+        // console.log("We send a letter to verify the new account!", usermail, userid, origin, language);
+        sendVerifyEmail(usermail, userid, origin, language);
         return res.json({ user: response.toAuthJSON() });
       })
       .catch(() => {
@@ -79,11 +81,12 @@ router.get('/facebook', auth.optional, jsonParser,
   passport.authenticate('facebook'));
 
 router.get('/facebook/callback', auth.optional, jsonParser, (req, res, next) => {
-  const client = req.header('Referer');
+  const referer = req.header('Referer');
+  const { language } = req;
 
   // eslint-disable-next-line no-unused-vars
   passport.authenticate('facebook', { session: false, scope : ['email'] }, (err, facebookUser, usermail) => {
-    if (err) return res.redirect(`${client}/login`);
+    if (err) return res.redirect(`${referer}/login`);
 
     const newUser = new User({ usermail });
     if (!facebookUser) {
@@ -93,19 +96,19 @@ router.get('/facebook/callback', auth.optional, jsonParser, (req, res, next) => 
       newUser.save()
       .then((response) => {
         const userid = response._id; // eslint-disable-line no-underscore-dangle
-        // console.log("We send a letter to verify the new account!", usermail, userid, client);
-        sendVerifyEmail(usermail, userid, client);
+        // console.log("We send a letter to verify the new account!", usermail, userid, referer, language);
+        sendVerifyEmail(usermail, userid, referer, language);
       })
       .catch(() => {
         // console.log("Failed to save new account!");
-        return res.status(400).json({ message: config.MESSAGES.auth_400 });
+        return res.status(400).json({ message: req.t('auth_400') });
       });
     }
 
     const user = facebookUser || newUser;
     const _user = user.toAuthJSON();
     const { token } = _user;
-    res.redirect(`${client}social?token=${token}`);
+    res.redirect(`${referer}social?token=${token}`);
   })(req, res, next);
 });
 
@@ -115,11 +118,12 @@ router.get('/vkontakte', auth.optional, jsonParser,
   passport.authenticate('vkontakte' , { session: false, scope : [ 'email' ] }));
 
 router.get('/vkontakte/callback', auth.optional, jsonParser, (req, res, next) => {
-  const client = req.header('Referer');
+  const referer = req.header('Referer');
+  const { language } = req;
 
   // eslint-disable-next-line no-unused-vars
   passport.authenticate('vkontakte', { session: false, scope : [ 'email' ] }, (err, vkontakteUser, usermail) => {
-    if (err) return res.redirect(`${client}/login`);
+    if (err) return res.redirect(`${referer}/login`);
 
     const newUser = new User({ usermail });
     if (!vkontakteUser) {
@@ -129,19 +133,19 @@ router.get('/vkontakte/callback', auth.optional, jsonParser, (req, res, next) =>
       newUser.save()
       .then((response) => {
         const userid = response._id; // eslint-disable-line no-underscore-dangle
-        // console.log("We send a letter to verify the new account!", usermail, userid, client);
-        sendVerifyEmail(usermail, userid, client);
+        // console.log("We send a letter to verify the new account!", usermail, userid, referer, language);
+        sendVerifyEmail(usermail, userid, referer, language);
       })
       .catch(() => {
         // console.log("Failed to save new account!");
-        return res.status(400).json({ message: config.MESSAGES.auth_400 });
+        return res.status(400).json({ message: req.t('auth_400') });
       });
     }
 
     const user = vkontakteUser || newUser;
     const _user = user.toAuthJSON();
     const { token } = _user;
-    res.redirect(`${client}social?token=${token}`);
+    res.redirect(`${referer}social?token=${token}`);
   })(req, res, next);
 });
 
@@ -149,15 +153,16 @@ router.get('/vkontakte/callback', auth.optional, jsonParser, (req, res, next) =>
 // POST Send verification email
 router.post('/send-verify-email', auth.required, jsonParser, (req, res, next) => {
   const { user: { id } } = req;
-  const { client } = req.headers;
+  const { origin } = req.headers;
+  const { language } = req;
 
   User.findOne({ _id: id }, (err, user) => {
     if (err) return res.sendStatus(400);
 
     const { usermail } = user;
     const userid = user._id; // eslint-disable-line no-underscore-dangle
-    // console.log("We are sending an email to verify your account!", usermail, userid, clien);
-    sendVerifyEmail(usermail, userid, client);
+    // console.log("We are sending an email to verify your account!", usermail, userid, origin);
+    sendVerifyEmail(usermail, userid, origin, language);
     return res.sendStatus(200);
   });
 });
@@ -170,9 +175,9 @@ router.post('/verify', auth.optional, jsonParser, (req, res, next) => {
   return User.findOneAndUpdate({ _id: id },
     { $set: { isVerify: true } },
     { returnOriginal: false }, (err, verifyUser) => { // eslint-disable-line no-unused-vars
-      if (err) return res.status(400).json({ message: config.MESSAGES.verify_400 });
+      if (err) return res.status(400).json({ message: req.t('verify_400') });
 
-      return res.status(200).json({ message: config.MESSAGES.verify_200 });
+      return res.status(200).json({ message: req.t('verify_200') });
     });
 });
 
@@ -180,19 +185,20 @@ router.post('/verify', auth.optional, jsonParser, (req, res, next) => {
 // POST Remind password
 router.post('/remind', auth.optional, jsonParser, (req, res, next) => {
   const { body: { usermail } } = req;
-  const { client } = req.headers;
+  const { origin } = req.headers;
+  const { language } = req;
 
   return User.findOne({ usermail }, (err, user) => {
     if (err) return res.sendStatus(400);
 
-    if (!user) return res.status(422).json({ message: config.MESSAGES.remind_pass_422 });
+    if (!user) return res.status(422).json({ message: req.t('remind_pass_422') });
 
     const authUser = user.toAuthJSON();
     const userid = authUser.id; // eslint-disable-line no-underscore-dangle
     const { token } = authUser;
     // console.log("We send an email to recover the password for the account!", user);
-    sendPasswordRemindEmail(usermail, userid, token, client);
-    return res.status(200).json({ message: config.MESSAGES.remind_pass_200 });
+    sendPasswordRemindEmail(usermail, userid, token, origin, language);
+    return res.status(200).json({ message: req.t('remind_pass_200') });
   });
 });
 
@@ -202,17 +208,17 @@ router.post('/password', auth.required, jsonParser, (req, res, next) => {
   const { body: { user: { id, password } } } = req;
 
   User.findOne({ _id: id }, (err, user) => {
-    if (err) return res.status(400).json({ message: config.MESSAGES.set_pass_400 });
+    if (err) return res.status(400).json({ message: req.t('set_pass_400') });
 
     const newPassword = user.setNewPassword(password);
     return User.findOneAndUpdate({ _id: id },
       { $set: { password: newPassword } },
       { returnOriginal: false }, (error, passwordUser) => { // eslint-disable-line no-unused-vars
         if (err) {
-          return res.status(400).json({ message: config.MESSAGES.set_pass_400 });
+          return res.status(400).json({ message: req.t('set_pass_400') });
         }
 
-        return res.status(200).json({ message: config.MESSAGES.set_pass_200 });;
+        return res.status(200).json({ message: req.t('set_pass_200') });
       });
   });
 });
@@ -234,7 +240,8 @@ router.get('/profile', auth.required, jsonParser, (req, res, next) => {
 // GET Logout
 router.get('/logout', auth.required, (req, res, next) => {
   req.session.destroy();
-  res.send('logout success!');
+  res.send(req.t('logout_success'));
+  res.end();
 });
 
 

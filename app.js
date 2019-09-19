@@ -3,6 +3,9 @@ import session from 'express-session';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import url from 'url';
+import i18next from 'i18next';
+import i18nextMiddleware from 'i18next-express-middleware';
+import Backend from 'i18next-node-fs-backend';
 
 import config from './config/config';
 
@@ -44,6 +47,25 @@ if (config.STATIC_SERVE) {
   const mediaURL = new url.URL(config.MEDIA_URL);
   app.use(mediaURL.pathname, express.static(config.MEDIA_DIR));
 }
+
+i18next
+  .use(Backend)
+  .use(i18nextMiddleware.LanguageDetector)
+  .init({
+    backend: {
+      loadPath: __dirname + '/locales/{{lng}}/{{ns}}.json',
+      addPath: __dirname + '/locales/{{lng}}/{{ns}}.missing.json'
+    },
+    fallbackLng: 'en',
+    preload: ['en', 'ru'],
+    saveMissing: true,
+    detection: {
+      order: [ 'cookie' ],
+      lookupCookie: 'language',
+    },
+  });
+
+app.use(i18nextMiddleware.handle(i18next));
 
 app.use(passport.initialize());
 app.use(passport.session());
