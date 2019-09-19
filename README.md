@@ -15,8 +15,7 @@ Backend Auth Module
 * [Vue cli based PWA frontend boilerpate](https://github.com/ushliypakostnik/vue-auth), [Демонстрация](https://vue-auth.kafedra.org/)
 
 
-Features:
----------
+### Features
 
 * Локализация: сообщения об ошибках, а также письма будут отправляться пользователю на языке выбранном в момент отравки на клиенте
 
