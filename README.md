@@ -10,9 +10,13 @@ Backend Auth Module
 Примеры клиентских приложений
 -----------------------------
 
-* [Create React App based PWA frontend boilerpate](https://github.com/ushliypakostnik/react-auth), [Демонстрация](https://react-auth.kafedra.org/)
+* Репозиторий: [Create React App based PWA frontend boilerpate](https://github.com/ushliypakostnik/react-auth)
 
-* [Vue cli based PWA frontend boilerpate](https://github.com/ushliypakostnik/vue-auth), [Демонстрация](https://vue-auth.kafedra.org/)
+[Демонстрация](https://react-auth.kafedra.org/)
+
+* Репозиторий: [Vue cli based PWA frontend boilerpate](https://github.com/ushliypakostnik/vue-auth)
+
+[Демонстрация](https://vue-auth.kafedra.org/)
 
 
 ### Features
