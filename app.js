@@ -39,7 +39,14 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 // CORS
 if (config.CORS_ENABLED) {
-  app.use(cors());
+const corsOptions = {
+    credentials: true,
+    origin: function (origin, callback) {
+      callback(null, origin);
+    }
+  }
+
+  app.use(cors(corsOptions));
 }
 
 // Static
