@@ -15,9 +15,9 @@ Backend Auth Module
 * Репозиторий: [Vue cli based frontend boilerplate](https://github.com/ushliypakostnik/vue-auth), демонстрация: [https://vue-auth.kafedra.org/](https://vue-auth.kafedra.org/)
 
 
-### Features
+### Локализация
 
-* Локализация: сообщения об ошибках, а также письма будут отправляться пользователю на языке выбранном в момент отравки на клиенте.
+Сообщения об ошибках, а также письма напрвляются пользователю на языке выбранном в момент отравки запроса на клиенте.
 
 
 API
