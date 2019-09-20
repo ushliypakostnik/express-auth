@@ -28,8 +28,6 @@ mailer.extend(app, {
 export const sendVerifyEmail = (email, id, clientHost, language) => {
   const client = clientHost.slice(-1) === '/' ? clientHost.slice(0, -1) : clientHost;
 
-  console.log(language);
-
   app.mailer.send(`pages/${language}/verify-email.html`, {
     to: email,
     subject: 'Verify account',
