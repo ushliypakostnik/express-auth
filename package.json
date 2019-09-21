@@ -1,6 +1,8 @@
 {
   "name": "express-auth",
-  "version": "1.1.0",
+  "description" : "Backend auth module",
+  "version": "2.0.0",
+  "private": true,
   "main": "server.js",
   "scripts": {
     "start": "cross-env NODE_ENV=development nodemon server.js --exec babel-node",
@@ -11,6 +13,10 @@
   },
   "author": "Levon Gambaryan",
   "license": "ISC",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/ushliypakostnik/express-auth"
+  },
   "dependencies": {
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
