@@ -39,12 +39,12 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 // CORS
 if (config.CORS_ENABLED) {
-const corsOptions = {
-    credentials: true,
-    origin: function (origin, callback) {
+  const corsOptions = {
+    credentials: true, // eslint-disable-line object-shorthand
+    origin: (origin, callback) => {
       callback(null, origin);
-    }
-  }
+    },
+  };
 
   app.use(cors(corsOptions));
 }
@@ -60,14 +60,16 @@ i18next
   .use(i18nextMiddleware.LanguageDetector)
   .init({
     backend: {
+      // eslint-disable-next-line prefer-template, no-path-concat
       loadPath: __dirname + '/locales/{{lng}}/{{ns}}.json',
-      addPath: __dirname + '/locales/{{lng}}/{{ns}}.missing.json'
+      // eslint-disable-next-line prefer-template, no-path-concat
+      addPath: __dirname + '/locales/{{lng}}/{{ns}}.missing.json',
     },
     fallbackLng: 'en',
     preload: ['en', 'ru'],
     saveMissing: true,
     detection: {
-      order: [ 'cookie' ],
+      order: ['cookie'],
       lookupCookie: 'language',
     },
   });

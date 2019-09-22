@@ -1,8 +1,6 @@
 import { Router } from 'express';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
-import url from 'url';
-import i18next from 'i18next';
 
 import auth from '../auth';
 import passport from '../../config/passport';
@@ -17,6 +15,7 @@ const router = Router();
 const jsonParser = bodyParser.json();
 const User = mongoose.model('User');
 
+/* eslint-disable max-len */
 
 // POST standart login route (optional, everyone has access)
 router.post('/login', auth.optional, jsonParser, (req, res, next) => {
@@ -30,11 +29,8 @@ router.post('/login', auth.optional, jsonParser, (req, res, next) => {
 
     // If the user is in the database
     if (passportUser) {
-
       // And the password is valid for this email
-      if (!info) {
-        return res.json({ user: passportUser.toAuthJSON() });
-      }
+      if (!info) return res.json({ user: passportUser.toAuthJSON() });
 
       if (info.message === config.MESSAGES.validation_social) {
         const { usermail } = user;
@@ -68,7 +64,7 @@ router.post('/login', auth.optional, jsonParser, (req, res, next) => {
         sendVerifyEmail(usermail, userid, origin, language);
         return res.json({ user: response.toAuthJSON() });
       })
-      .catch(() => {
+      .catch(() => { // eslint-disable-line arrow-body-style
         // console.log("Failed to save new account!");
         return res.status(400);
       });
@@ -84,8 +80,8 @@ router.get('/facebook/callback', auth.optional, jsonParser, (req, res, next) => 
   const referer = req.header('Referer');
   const { language } = req;
 
-  // eslint-disable-next-line no-unused-vars
-  passport.authenticate('facebook', { session: false, scope : ['email'] }, (err, facebookUser, usermail) => {
+  // eslint-disable-next-line no-unused-vars, consistent-return
+  passport.authenticate('facebook', { session: false, scope: ['email'] }, (err, facebookUser, usermail) => {
     if (err) return res.redirect(`${referer}/login`);
 
     const newUser = new User({ usermail });
@@ -94,19 +90,19 @@ router.get('/facebook/callback', auth.optional, jsonParser, (req, res, next) => 
       newUser.setNewUser(null);
 
       newUser.save()
-      .then((response) => {
-        const userid = response._id; // eslint-disable-line no-underscore-dangle
-        // console.log("We send a letter to verify the new account!", usermail, userid, referer, language);
-        sendVerifyEmail(usermail, userid, referer, language);
-      })
-      .catch(() => {
-        // console.log("Failed to save new account!");
-        return res.status(400).json({ message: req.t('auth_400') });
-      });
+        .then((response) => {
+          const userid = response._id; // eslint-disable-line no-underscore-dangle
+          // console.log("We send a letter to verify the new account!", usermail, userid, referer, language);
+          sendVerifyEmail(usermail, userid, referer, language);
+        })
+        .catch(() => { // eslint-disable-line arrow-body-style
+          // console.log("Failed to save new account!");
+          return res.status(400).json({ message: req.t('auth_400') });
+        });
     }
 
     const user = facebookUser || newUser;
-    const _user = user.toAuthJSON();
+    const _user = user.toAuthJSON(); // eslint-disable-line no-underscore-dangle
     const { token } = _user;
     res.redirect(`${referer}social?token=${token}`);
   })(req, res, next);
@@ -115,14 +111,14 @@ router.get('/facebook/callback', auth.optional, jsonParser, (req, res, next) => 
 
 // GET login via Vkontakte route (optional, everyone has access)
 router.get('/vkontakte', auth.optional, jsonParser,
-  passport.authenticate('vkontakte' , { session: false, scope : [ 'email' ] }));
+  passport.authenticate('vkontakte', { session: false, scope: ['email'] }));
 
 router.get('/vkontakte/callback', auth.optional, jsonParser, (req, res, next) => {
   const referer = req.header('Referer');
   const { language } = req;
 
-  // eslint-disable-next-line no-unused-vars
-  passport.authenticate('vkontakte', { session: false, scope : [ 'email' ] }, (err, vkontakteUser, usermail) => {
+  // eslint-disable-next-line no-unused-vars, consistent-return
+  passport.authenticate('vkontakte', { session: false, scope: ['email'] }, (err, vkontakteUser, usermail) => {
     if (err) return res.redirect(`${referer}/login`);
 
     const newUser = new User({ usermail });
@@ -131,19 +127,19 @@ router.get('/vkontakte/callback', auth.optional, jsonParser, (req, res, next) =>
       newUser.setNewUser(null);
 
       newUser.save()
-      .then((response) => {
-        const userid = response._id; // eslint-disable-line no-underscore-dangle
-        // console.log("We send a letter to verify the new account!", usermail, userid, referer, language);
-        sendVerifyEmail(usermail, userid, referer, language);
-      })
-      .catch(() => {
-        // console.log("Failed to save new account!");
-        return res.status(400).json({ message: req.t('auth_400') });
-      });
+        .then((response) => {
+          const userid = response._id; // eslint-disable-line no-underscore-dangle
+          // console.log("We send a letter to verify the new account!", usermail, userid, referer, language);
+          sendVerifyEmail(usermail, userid, referer, language);
+        })
+        .catch(() => { // eslint-disable-line arrow-body-style
+          // console.log("Failed to save new account!");
+          return res.status(400).json({ message: req.t('auth_400') });
+        });
     }
 
     const user = vkontakteUser || newUser;
-    const _user = user.toAuthJSON();
+    const _user = user.toAuthJSON(); // eslint-disable-line no-underscore-dangle
     const { token } = _user;
     res.redirect(`${referer}social?token=${token}`);
   })(req, res, next);
@@ -246,3 +242,5 @@ router.get('/logout', auth.required, (req, res, next) => {
 
 
 export default router;
+
+/* eslint-enable max-len */

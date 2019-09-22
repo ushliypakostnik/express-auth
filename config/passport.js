@@ -20,7 +20,7 @@ const local = new LocalStrategy({
         return done(null, false, { message: config.MESSAGES.validation_no_user });
       }
       if (user && !user.password) {
-          return done(null, user, { message: config.MESSAGES.validation_social });
+        return done(null, user, { message: config.MESSAGES.validation_social });
       }
       if (user && !user.validatePassword(password)) {
         return done(null, user, { message: config.MESSAGES.validation_password_invalid });
@@ -37,11 +37,11 @@ const facebook = new FacebookStrategy({
   clientID: config.PASS.FACEBOOK.id,
   clientSecret: config.PASS.FACEBOOK.secret,
   callbackURL: `${config.HOST}/api/user/facebook/callback`,
-  profileFields: [ 'email' ],
+  profileFields: ['email'],
 }, (accessToken, refreshToken, profile, done) => {
-  const usermail = String(profile._json.email);
+  const usermail = String(profile._json.email); // eslint-disable-line no-underscore-dangle
   User.findOne({ usermail })
-    .then((user) => {
+    .then((user) => { // eslint-disable-line arrow-body-style
       return done(null, user, usermail);
     }).catch(done, false, usermail);
 });
@@ -53,11 +53,11 @@ const vkontakte = new VKontakteStrategy({
   clientID: config.PASS.VKONTAKTE.id,
   clientSecret: config.PASS.VKONTAKTE.secret,
   callbackURL: `${config.HOST}/api/user/vkontakte/callback`,
-  profileFields: [ 'email' ],
+  profileFields: ['email'],
 }, (accessToken, refreshToken, params, profile, done) => {
-  let usermail = params.email;
+  const usermail = params.email;
   User.findOne({ usermail })
-    .then((user) => {
+    .then((user) => { // eslint-disable-line arrow-body-style
       return done(null, user, usermail);
     }).catch(done, false, usermail);
 });

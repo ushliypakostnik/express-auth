@@ -15,7 +15,7 @@ const common = {
   MEDIA_DIR: process.env.MEDIA_DIR || 'media',
   STATIC_SERVE: process.env.STATIC_SERVE || false,
   PASS: {
-    RANDOM_BYTES:random,
+    RANDOM_BYTES: random,
     SECRET: secret,
     SALT_LENGTH: secret.length,
     DB: {
@@ -32,7 +32,7 @@ const common = {
     VKONTAKTE: {
       id: process.env.VKONTAKTE_APP_ID || PASS.VKONTAKTE.id,
       secret: process.env.VKONTAKTE_APP_SECRET || PASS.VKONTAKTE.secret,
-    }
+    },
   },
   MESSAGES,
 };
