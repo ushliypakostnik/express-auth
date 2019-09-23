@@ -3,9 +3,11 @@ import crypto from 'crypto';
 import PASS from './pass';
 import MESSAGES from './messages';
 
-require('dotenv').config();
-
 const env = process.env.NODE_ENV;
+
+if (env === 'production') {
+  require('dotenv').config();
+}
 
 const random = Number(process.env.RANDOM_BYTES) || PASS.RANDOM_BYTES;
 const secret = crypto.randomBytes(random).toString('hex');
